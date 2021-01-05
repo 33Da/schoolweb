@@ -1,0 +1,296 @@
+{% extends "./userbase.html" %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-float-label.min.css' %}">
+    <style>
+        /*控制下拉小箭头的*/
+        input[type="date"]::-webkit-calendar-picker-indicator {
+          display: inline-block;
+          width: 15px;
+          height: 15px;
+          /* position: absolute;
+          top: 12px;
+          right: 0px; */
+          border: 1px solid #ccc;
+          border-radius: 2px;
+          box-shadow: inset 0 1px #fff, 0 1px #eee;
+          background-color: #eee;
+          /* background:url('../images/icon.png') -188px -99px; */
+          background-image: -webkit-linear-gradient(top, #f0f0f0, #e6e6e6);
+          color: #666;
+        }
+        /* 去掉date中上下小三角，但是保留input类型为number的小三角。 */
+        input[type=date]::-webkit-inner-spin-button {
+          visibility: hidden;
+        }
+    </style>
+{% endblock %}
+{% block script %}
+    <script>
+        $(function () {
+            $(".delete").click(function (event) {
+                let id = $(this).attr("name")
+
+                $.ajax({
+                    async: true,
+                    url: '/user/lost/delete/' + id + "/",
+                    type: 'GET',
+                    traditional: true,
+
+                }).done(function (data) {
+                    console.log(data)
+                    if (data.ret == "success") {
+                        window.location.reload()
+                        console.log("success")
+                    } else {
+                        console.log("error")
+                    }
+
+                })
+            });
+
+        })
+    </script>
+{% endblock %}
+{% block userbody %}
+    <div id="rightborder" class="pull-left" style="margin: 0;">
+        <div>
+            <div>
+                <ul class="nav nav-tabs" role="tablist" style="border: 0;">
+                    <li role="presentation" class="active">
+                        <a href="#home" aria-controls="home" role="tab" data-toggle="tab">寻物</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">拾取</a>
+                    </li>
+                </ul>
+
+                <!-- 选项卡 -->
+                <div class="tab-content pull-left">
+                    <!-- 第一页 :我发布的寻物-->
+                    <div role="tabpanel" class="tab-pane active pull-left" id="home">
+                        <h3 class="pull-left" style="margin-top:0;">
+                            我发布的寻物启事:
+                        </h3>
+                        <button class="btn btn-xs btn-primary glyphicon glyphicon-plus" type="button"
+                                data-toggle="modal" data-target="#myModal"></button>
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>物品名</th>
+                                <th>发布时间</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            {% for lost1 in page1 %}
+                                <tr>
+                                    {% widthratio 10 1 index1 as size %}
+                                    <td name="{{ lost1.id }}">{{ size|add:forloop.counter }}</td>
+                                    <td>
+                                        <a href="/lost/detail/{{ lost1.id }}/">{{ lost1.name }}</a>
+                                    </td>
+                                    <td>{{ lost1.publish_time }}</td>
+
+                                    <td>
+                                        <a href="/lost/detail/{{ lost1.id }}/" class="btn btn-primary">查看</a>
+                                        <input type="button" class="delete btn btn-danger" name="{{ lost1.id }}"
+                                               value="删除">
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                        {# 寻物分页#}
+                        <div id="course-page">
+                            <nav aria-label="Page navigation">
+                                <div class="pagination" style="margin: 0 0">
+                                    <ul class="pagination">
+                                        {% if page1.has_previous %}
+                                            <li><a href="/user/lost/{{ page1.previous_page_number }}/{{ pindex2 }}/"
+                                                   aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span></a></li>
+                                        {% endif %}
+
+                                        {% for num in page1.paginator.page_range %}
+                                            {% if pindex1 == num %}
+                                                <li><a href="">{{ num }}</a></li>
+                                            {% else %}
+                                                <li><a href="/user/lost/{{ num }}/{{ pindex2 }}/">{{ num }}</a></li>
+                                            {% endif %}
+                                        {% endfor %}
+
+                                        {% if page2.has_next %}
+                                            <li><a href="/user/lost/{{ page2.next_page_number }}/{{ pindex2 }}/"
+                                                   aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span></a></li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                    <!-- 第二页 -->
+                    <div role="tabpanel" class="tab-pane pull-left" id="profile">
+                        <h3 style="margin-top:0;" class="pull-left">
+                            我发布的拾物启示:
+                        </h3>
+                        <button class="btn btn-xs btn-primary glyphicon glyphicon-plus" type="button"
+                                data-toggle="modal" data-target="#myModal2"></button>
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>物品名</th>
+                                <th>发布时间</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            {% for lost2 in page2 %}
+                                <tr>
+                                    {% widthratio 10 1 index2 as size %}
+                                    <td name="{{ new.id }}">{{ size|add:forloop.counter }}</td>
+                                    <td>
+                                        <a href="/lost/detail/{{ lost2.id }}/">{{ lost2.name }}</a>
+                                    </td>
+                                    <td>{{ lost2.publish_time }}</td>
+
+                                    <td>
+                                        <a href="/lost/detail/{{ lost2.id }}/" class="btn btn-primary">查看</a>
+                                        <input type="button" class="delete btn btn-danger" name="{{ lost2.id }}"
+                                               value="删除">
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                        {# 拾取分页#}
+                        <div id="course-page">
+                            <nav aria-label="Page navigation">
+                                <div class="pagination" style="margin: 0 0">
+                                    <ul class="pagination">
+                                        {% if page2.has_previous %}
+                                            <li><a href="/user/lost/{{ pindex1 }}/{{ page2.previous_page_number }}/"
+                                                   aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span></a></li>
+                                        {% endif %}
+
+                                        {% for num in page2.paginator.page_range %}
+                                            {% if pindex2 == num %}
+                                                <li><a href="">{{ num }}</a></li>
+                                            {% else %}
+                                                <li><a href="/user/lost/{{ pindex1 }}/{{ num }}/">{{ num }}</a></li>
+                                            {% endif %}
+                                        {% endfor %}
+
+                                        {% if page2.has_next %}
+                                            <li><a href="/user/lost/{{ pindex1 }}/{{ page2.next_page_number }}/"
+                                                   aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span></a></li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {#失物创建模态框#}
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title " id="myModalLabel">发布失物</h4>
+                </div>
+                <form action="/lost/create/0/" method="post" enctype="multipart/form-data" class="well text-center">
+                    {% csrf_token %}
+                    <div class="modal-body form-group input-group"
+                         style="margin-bottom: 0;width: 400px;margin: 0 auto;">
+                        <span class="has-float-label">
+                            <input type="text" name="name" class="form-control" placeholder="请输入" id="itemname">
+                        <label for="itemname">物品名</label>
+                        </span>
+                        <span class="has-float-label">
+                            <input type="text" name="tel" class="form-control" placeholder="请输入" id="itemnum">
+                            <label for="itemnum">联系电话</label>
+                        </span>
+                    </div>
+                    <div class="form-group has-float-label">
+                        <textarea name="content" id="blankarea" cols="30" rows="2" class="form-control"></textarea>
+                        <label for="blankarea">详情</label>
+                    </div>
+                    <div class="forleft">
+                        <div class="form-group" style="display: inline;margin-right: 10px;">
+                            <label for="pic-1" class="btn btn-primary">失物图片-1</label>
+                            <input type="file" name="pic1" id="pic-1" style="display: none;">
+                        </div>
+                        <div class="form-group" style="display: inline;">
+                            <label for="pic-2" class="btn btn-primary">失物图片-2</label>
+                            <input type="file" name="pic2" id="pic-2" style="display: none;">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="pull-left">
+                            <span class="glyphicon glyphicon-calendar">&nbsp;丢失时间</span>
+                            <input type="datetime-local" name="time" id="timeinput">
+                        </div>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <input type="submit" value="提交" class="btn btn-primary">
+                    </div>
+                    <div style="color: red">{{ request.session.err }}</div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {#拾取模态框#}
+    <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title " id="myModalLabel">发布拾取</h4>
+                </div>
+                <form action="/lost/create/1/" method="post" enctype="multipart/form-data" class="well text-center">
+                    {% csrf_token %}
+                    <div class="modal-body form-group input-group"
+                         style="margin-bottom: 0;width: 400px;margin: 0 auto;">
+                        <span class="has-float-label">
+                            <input type="text" name="name" class="form-control" placeholder="请输入" id="lostname">
+                        <label for="lostname">物品名</label>
+                        </span>
+                        <span class="has-float-label">
+                            <input type="text" name="tel" class="form-control" placeholder="请输入" id="lostnum">
+                            <label for="lostnum">联系电话</label>
+                        </span>
+                    </div>
+                    <div class="form-group has-float-label">
+                        <textarea name="content" id="lostarea" cols="30" rows="2" class="form-control"></textarea>
+                        <label for="lostarea">详情</label>
+                    </div>
+                    <div class="forleft">
+                        <div class="form-group" style="display: inline;margin-right: 10px;">
+                            <label for="pic-3" class="btn btn-primary">拾取图片-1</label>
+                            <input type="file" name="pic1" id="pic-3" style="display: none;">
+                        </div>
+                        <div class="form-group" style="display: inline;">
+                            <label for="pic-4" class="btn btn-primary">拾取图片-2</label>
+                            <input type="file" name="pic2" id="pic-4" style="display: none;">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="pull-left">
+                            <span class="glyphicon glyphicon-calendar">&nbsp;拾取时间</span>
+                            <input type="datetime-local" name="time" id="timeinput">
+                        </div>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <input type="submit" value="提交" class="btn btn-primary">
+                    </div>
+                    <div style="color: red">{{ err }}</div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

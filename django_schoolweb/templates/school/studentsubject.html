@@ -1,0 +1,178 @@
+{% extends "./userbase.html" %}
+{% block script %}
+    <script>
+        //使用ajax的post提交要加上geCookie()和csrfSafeMethod（）和ajaxSetup（）这三个函数，不然会报403,csrf
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                var csrftoken = getCookie('csrftoken');
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        $(function () {
+
+            $(".delete").click(function (event) {
+                let id = $(this).attr("name")
+
+                $.ajax({
+                    async: true,
+                    url: '/user/student/deleteclass/',
+                    type: 'POST',
+                    traditional: true,
+                    data: {"sid": id}
+                }).done(function (data) {
+                    console.log(data)
+                    if (data.ret == "success") {
+                        window.location.reload()
+                        console.log("success")
+                    } else {
+                        console.log("error")
+                    }
+
+                })
+            });
+
+            $("#search").click(function (event) {
+                let classcode = $("#classcode").val()
+                let type = $("#type").val()
+                let read_type = $("#read_type").val()
+                window.location.href = '/user/student/class/{{ pindex }}/?' + "classcode=" + classcode + "&type=" + type + "&read_type=" + read_type;
+
+            });
+
+            $(".choice").click(function (event) {
+                let id = $(this).attr("name")
+
+                $.ajax({
+                    async: true,
+                    url: '/user/student/choiceclass/',
+                    type: 'POST',
+                    traditional: true,
+                    data: {"sid": id}
+                }).done(function (data) {
+                    console.log(data)
+                    if (data.ret == "success") {
+                        window.location.reload()
+                        console.log("success")
+                    } else {
+                        console.log("error")
+                    }
+
+                })
+
+            });
+
+
+        })
+    </script>
+{% endblock %}
+{% block userbody %}
+    <div id="rightborder" class="pull-left">
+        <div id="course-search">
+            <input type="text" placeholder="课程号或课程名" id="classcode" class="input-information">
+            <span>选课类型:</span>
+            <select name="type" id="type">
+                <option value="0">全部</option>
+                <option value="1">公共课</option>
+                <option value="2">实践课</option>
+                <option value="3">选修课</option>
+            </select>
+            <span>修读类型:</span>
+            <select name="read_type" id="read_type">
+                <option value="0">全部</option>
+                <option value="1">选修</option>
+                <option value="2">必修</option>
+            </select>
+            <input type="submit" id="search" class="btn btn-info btn-xs" value="搜索">
+        </div>
+        <div id="course-table">
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>课程代号</th>
+                    <th>课程名称</th>
+                    <th>总分</th>
+                    <th>学分</th>
+                    <th>开课-结课时间</th>
+                    <th>教师</th>
+                    <th>课程类型</th>
+                    <th>修读方式</th>
+                    <th>所属学院</th>
+                    <th>备注</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                {% for subject in page %}
+                    <tr class="active">
+                        <td>{{ subject.code }}</td>
+                        <td>{{ subject.name }}</td>
+                        <td>{{ subject.total }}</td>
+                        <td>{{ subject.credit }}</td>
+                        <td>{{ subject.starttime }}-{{ subject.endtime }}</td>
+
+                        <td>{{ subject.teacher.last_name }}</td>
+                        <td>{{ subject.get_type_display }}</td>
+                        <td>{{ subject.get_readtype_display }}</td>
+                        <td>{{ subject.college.name }}</td>
+                        <td>{{ subject.content }}</td>
+
+                        <td>
+                            {% if subject.id in mysubject %}
+                                <input type="button" class="delete btn btn-danger" name="{{ subject.id }}" value="退课">
+                            {% else %}
+                                <input type="button" class="choice btn btn-info" name="{{ subject.id }}" value="选课">
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            {#    分页#}
+            <div id="course-page">
+                <nav aria-label="Page navigation">
+                    <div class="pagination" style="margin: 0 0">
+                        <ul class="pagination">
+                            {% if page.has_previous %}
+                                <li><a href="/user/student/class/{{ page.previous_page_number }}/" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span></a></li>
+                            {% endif %}
+                            {% for num in page.paginator.page_range %}
+                                {% if pindex == num %}
+                                    <li><a href="">{{ num }}</a></li>
+                                {% else %}
+                                    <li><a href="/user/student/class/{{ num }}/">{{ num }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            {% if page.has_next %}
+                                <li><a href="/user/student/class/{{ page.next_page_number }}/" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span></a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+{% endblock %}

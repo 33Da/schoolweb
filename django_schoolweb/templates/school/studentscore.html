@@ -1,0 +1,69 @@
+{% extends "./userbase.html" %}
+
+{% block userbody %}
+    <div id="rightborder" class="pull-left">
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>开课学期学年</th>
+                <th>课程代号</th>
+                <th>课程名称</th>
+                <th>成绩</th>
+                <th>学分</th>
+                <th>课程类型</th>
+                <th>修读方式</th>
+                <th>所属学院</th>
+                <th>备注</th>
+            </tr>
+            </thead>
+            {% for class in page %}
+                <tr>
+                    {% widthratio 10 1 index as size %}
+                    <td name="{{ class.id }}">{{ size|add:forloop.counter }}</td>
+                    <td>{{ class.subject.starttime }}-{{ class.subject.endtime }}</td>
+                    <td>{{ class.subject.code }}</td>
+                    <td>{{ class.subject.name }}</td>
+                    {% if class.total == None %}
+                        <td>成绩未录入</td>
+                    {% else %}
+                        <td>{{ class.total }}</td>
+
+                    {% endif %}
+                    <td>{{ class.subject.credit }}</td>
+                    <td>{{ class.subject.get_type_display }}</td>
+                    <td>{{ class.subject.get_readtype_display }}</td>
+                    <td>{{ class.subject.college.name }}</td>
+                    <td>{{ class.subject.content }}</td>
+
+                </tr>
+            {% endfor %}
+        </table>
+        {#    分页#}
+        <div id="course-page">
+            <nav aria-label="Page navigation">
+                <div class="pagination" style="margin: 0 0">
+                    <ul class="pagination">
+                        {% if page.has_previous %}
+                            <li><a href="/user/student/score/{{ page.previous_page_number }}/" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span></a></li>
+                        {% endif %}
+
+                        {% for num in page.paginator.page_range %}
+                            {% if pindex == num %}
+                                <li><a href="">{{ num }}</a></li>
+                            {% else %}
+                                <li><a href="/user/student/score/{{ num }}/">{{ num }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page.has_next %}
+                            <li><a href="/user/student/score/{{ page.next_page_number }}/" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span></a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+{% endblock %}

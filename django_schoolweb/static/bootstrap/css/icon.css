@@ -1,0 +1,142 @@
+@font-face
+/* 声明定义字体图标 */
+{
+    font-family: icon;
+    src: 
+    url("../fonts/icomoon.eot") format('embedded-ioentype'),
+    url("../fonts/icomoon.svg") format('svg'),
+    url("../fonts/icomoon.ttf") format('truetype'),
+    url("../fonts/icomoon.woff") format('woff');
+}
+[class^="icon-"],[class*=" icon-"]
+/* 选择匹配字符为"class=icon-"开头或包含这个字符串的元素，并定义样式 */
+{
+    font-family: icon;
+    font-style: normal;
+}
+.icon-cog::before
+/* 设置 */
+{
+  content: '\e994';
+  font-size: 15px;
+}
+.icon-search::before
+/* 搜索 */
+{
+  content: '\e986';
+  font-size: 15px;
+}
+.icon-user::before
+/* 用户 */
+{
+  content: '\e971';
+  font-size: 15px;
+}
+.icon-home::before
+/* 主页 */
+{
+    content:'\e902';
+    font-size: 15px;
+}
+.icon-images::before
+/* 图片 */
+{
+    content:'\e90e';
+    font-size: 15px;
+}
+.icon-music::before
+/* 音乐 */
+{
+    content:'\e911';
+    font-size: 15px;
+}
+.icon-play::before
+/* 视频 */
+{
+    content:'\e912';
+    font-size: 15px;
+}
+.icon-file::before
+/* 文件 */
+{
+    content:'e930';
+    font-size: 15px;
+}
+.icon-qrcode::before
+/* 二维码 */
+{
+    content:'\e938';
+    font-size: 15px;
+}
+.icon-calculator::before
+/* 计算器 */
+{
+    content:'\e940';
+    font-size: 15px;
+}
+.icon-phone::before
+/* 电话 */
+{
+  content: '\e942';
+  font-size: 15px;
+}
+.icon-clock::before
+/* 闹钟 */
+{
+    content:'\e94f';
+    font-size: 15px;
+}
+.icon-mobile::before
+/* 手机 */
+{
+    content:'\e959';
+    font-size: 15px;
+}
+.icon-undo::before
+/* 返回 */
+{
+    content:'\e967';
+    font-size: 15px;
+}
+.icon-display::before
+/* 电脑屏幕 */
+{
+    content:'\e956';
+    font-size: 15px;
+}
+.icon-bubble::before
+/* 留言 */
+{
+    content:'\e96e';
+    font-size: 15px;
+}
+.icon-spinner::before
+/* 加载中 */
+{
+    content:'\e97a';
+    font-size: 15px;
+}
+.icon-gift::before
+/* 礼物 */
+{
+    content:'\e99f';
+    font-size: 15px;
+}
+.icon-bin::before
+/* 删除/垃圾桶 */
+{
+    content:'\e9ac';
+    font-size: 15px;
+}
+.icon-truck::before
+/* 卡车 */
+{
+    content:'\e9b0';
+    font-size: 15px;
+}
+.icon-accessibility::before
+/* 个人中心 */
+{
+    content:'\e9b2';
+    font-size: 15px;
+}

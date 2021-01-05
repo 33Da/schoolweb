@@ -1,0 +1,102 @@
+{% extends "./adminbase.html" %}
+{% load static %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-float-label.min.css' %}">
+{% endblock %}
+{% block script %}
+<script>
+
+
+    $(function () {
+        $(".delete").click(function (event) {
+            let id = $(this).attr("name")
+
+
+            $.ajax({
+                async: true,
+                url: '/admin/college/delete/' + id + "/",
+                type: 'GET',
+                traditional: true,
+
+            }).done(function (data) {
+                console.log(data)
+                if (data.ret == "success") {
+                    window.location.reload()
+                    console.log("success")
+                } else {
+                    console.log("error")
+                }
+
+            })
+        });
+
+
+    })
+
+</script>
+
+{% endblock %}
+{% block adminbody %}
+
+<div class="pull-left" style="margin: 0;">
+
+    <form action="/admin/match/create/" method="post" class="well text-center" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="modal-body form-group input-group" style="margin-bottom: 0">
+                        <span class="has-float-label">
+                        <input type="text" name="name"  id='name' class="form-control" placeholder="请输入" id="coursename">
+                        <label for="name">赛事名称</label>
+                        </span>
+            <span class="has-float-label">
+                        <select id="matchtype" name="type" class="form-control">
+                        <option value="0">艺术类</option>
+                        <option value="1">学术科技类</option>
+                        <option value="2">体育类</option>
+                        <option value="3">其他</option>
+                    </select>
+                    <label for="matchtype">竞赛类型</label>
+            </span>
+            <span class="has-float-label">
+                        <input type="date" name="endtime" id="endtime">
+                        <label for="endtime">报名截止时间</label>
+                        </span>
+            <span class="has-float-label">
+                        <input type="text" id="team_people" name="team_people" class="form-control" placeholder="请输入">
+                        <label for="team_people">队伍人数限制</label>
+                        </span>
+            <span class="has-float-label">
+                        <input type="text" id="host" name="host" class="form-control" placeholder="请输入">
+                        <label for="host">主办方</label>
+                        </span>
+            <span class="has-float-label">
+                        <input type="text" id="advice_team" name="advice_team" class="form-control" placeholder="请输入">
+                        <label for="advice_team">咨询群</label>
+                        </span>
+        </div>
+        <div class="form-group has-float-label">
+            <textarea name="abstract" id="abstract" cols="30" rows="2" class="form-control"></textarea>
+            <label for="abstract">赛事简介</label>
+        </div>
+        <div class="form-group has-float-label">
+            <textarea name="content" id="blankcontent" cols="30" rows="10" class="form-control"></textarea>
+            <label for="blankcontent">赛事详情</label>
+        </div>
+        <div class="form-group" style="display: inline;">
+                            <label for="pic-1" class="btn btn-primary">海报上传</label>
+                            <input type="file" name="pic" multiple="" id="pic-1" style="display: none;">
+        </div>
+       <div class="form-group" style="display: inline;">
+                            <label for="file-1" class="btn btn-primary">上传附件</label>
+                            <input type="file" name="files" id="file-1" multiple=""  style="display: none;">
+        </div>
+
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            <input type="submit" value="创建比赛" class="btn btn-primary">
+        </div>
+        <div style="color: red">{{ err }}</div>
+    </form>
+</div>
+
+{% endblock adminbody %}

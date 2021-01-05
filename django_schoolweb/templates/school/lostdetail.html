@@ -1,0 +1,91 @@
+{% extends "./base.html" %}
+{% block body %}
+    <div id="new-box" class="row">
+        <div class="page-header">
+            <h1>
+                {% if lost.type == 0 %}
+                    失物:
+                {% else %}
+                    拾取:
+                {% endif %}
+                {{ lost.name }}
+                <small>发布时间:{{ lost.publish_time }}</small>
+            </h1>
+        </div>
+        <div class="col-md-6" style="border-right: #8d9395 2px solid;">
+            <div>
+                <h3>
+                    {% if lost.type == 0 %}
+                        丢失时间:
+                    {% else %}
+                        拾取时间:
+                    {% endif %}
+                    <small style="font-size: 20px;">
+                        {{ lost.time }}
+                    </small>
+                </h3>
+            </div>
+            <div>
+                <h3>
+                    联系电话:
+                    <small style="font-size: 20px;">
+                        {{ lost.tel }}
+                    </small>
+                </h3>
+            </div>
+            <div>
+                <h3 style="width:fit-content;width:fit-content;width:-moz-fit-content;float: left;margin: 80px 0px 0px 0px;">
+                    详细情况:
+                </h3>
+                <div style="background-color: #F2F2F2;width: 70%;height: 200px;float: left;border-radius: 10px;">
+                    <p style="font-size: 20px;color: rgba(149,151,141,0.99);margin: 5px 8px;">
+                        {{ lost.detail }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h3 style="text-align: center;margin-bottom: 15px;">
+                {% if lost.type == 0 %}
+                    失物图如下
+                {% else %}
+                    拾取图如下
+                {% endif %}
+            </h3>
+            <div class="row">
+                <div class="col-md-6">
+                    {% if lost.pic1 != "" %}
+                        <a href="" class="thumbnail" type="button" data-toggle="modal" data-target="#lost-pic1">
+                            <img src="/media/{{ lost.pic1 }}" alt="" width="305px" height="182px">
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    {% if lost.pic2 != "" %}
+                    <a href="" class="thumbnail" type="button" data-toggle="modal" data-target="#lost-pic2">
+                        <img src="/media/{{ lost.pic2 }}" alt="" width="305px" height="182px">
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="lost-pic1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div>
+                    <img src="/media/{{ lost.pic1 }}" alt="" width="100%" height="100%">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="lost-pic2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div>
+                    <img src="/media/{{ lost.pic2 }}" alt="" width="100%" height="100%">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

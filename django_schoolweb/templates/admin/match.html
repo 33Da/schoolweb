@@ -1,0 +1,195 @@
+{% extends "./adminbase.html" %}
+{% load static %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-float-label.min.css' %}">
+{% endblock %}
+{% block script %}
+<script>
+
+    $(function () {
+        $(".changestatus").click(function (event) {
+            let id = $(this).attr("name")
+
+            $.ajax({
+                async: true,
+                url: '/admin/match/status/' + id + "/",
+                type: 'GET',
+                traditional: true,
+
+            }).done(function (data) {
+
+                if (data.ret == "success") {
+                    window.location.reload()
+                    console.log("success")
+                } else {
+                    console.log("error")
+                }
+            })
+        });
+        $(".deletematch").click(function (event) {
+            let id = $(this).attr("name")
+
+            $.ajax({
+                async: true,
+                url: '/admin/match/delete/' + id + "/",
+                type: 'GET',
+                traditional: true,
+
+            }).done(function (data) {
+
+                if (data.ret == "success") {
+                    window.location.reload()
+                    console.log("success")
+                } else {
+                    console.log("error")
+                }
+            })
+        });
+
+
+    })
+       function submitform() {
+            document.form.submit();
+        }
+
+</script>
+
+{% endblock %}
+{% block adminbody %}
+<div id="rightborder" class="pull-left" style="margin: 0;">
+
+    <div class="pull-left" style="margin-bottom: 5px;">
+        <h3 style="margin: 0px" class="pull-left"><a href="/admin/match/create/">创建比赛</a></h3>
+
+    </div>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>比赛名称</th>
+            <th>类型</th>
+            <th>比赛简介</th>
+            <th>详情</th>
+            <th>操作</th>
+            <th>备注</th>
+        </tr>
+        </thead>
+        {% for match in page1 %}
+        <tr>
+
+            <td>{{ match.name }}</td>
+            <td>{{ match.get_type_display}}</td>
+            <td>{{ match.abstract }}</td>
+            <td>
+                <a href="/admin/match/detail/{{ match.id }}/">查看</a>
+            </td>
+
+            <td>
+                <a href="/admin/match/team/{{ match.id }}/1/1/1/" class="btn btn-info">队伍审核</a>
+                <a href="/admin/match/updata/{{ match.id }}/" class="btn btn-info">修改信息</a>
+                <input type="button" class="delete btn btn-danger changestatus" name="{{ match.id }}" value="比赛结束">
+
+            </td>
+            <td>
+
+                <span>待审核队伍：{{match.nocheck_team_num}}</span>
+                <span>已审核队伍：{{match.check_team_num}}</span>
+                <span>总队伍数：{{match.nocheck_team_num|add:match.check_team_num}}</span>
+            </td>
+
+        </tr>
+        {% endfor %}
+    </table>
+    {# 分页#}
+    <div id="course-page">
+        <nav aria-label="Page navigation">
+            <div class="pagination" style="margin: 0 0">
+                <ul class="pagination">
+                    {% if page1.has_previous %}
+                    <li><a href="/admin/match/{{ page1.previous_page_number }}/{{pindex2}}/" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span></a></li>
+                    {% endif %}
+
+                    {% for num in page1.paginator.page_range %}
+                    {% if pindex1 == num %}
+                    <li><a href="">{{ num }}</a></li>
+                    {% else %}
+                    <li><a href="/admin/match/{{ num }}/{{pindex2}}/">{{ num }}</a></li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if page1.has_next %}
+                    <li><a href="/admin/match/{{ page1.next_page_number }}/{{pindex2}}/" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span></a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>比赛名称</th>
+            <th>类型</th>
+            <th>比赛简介</th>
+            <th>操作</th>
+            <th>获奖详情</th>
+            <th>移入时间</th>
+        </tr>
+        </thead>
+        {% for match in page2 %}
+        <tr>
+
+            <td>{{ match.name }}</td>
+            <td>{{ match.get_type_display }}</td>
+            <td>{{ match.abstract }}</td>
+            <td>
+                <input type="button" class="delete btn btn-danger deletematch" name="{{ match.id }}" value="永久删除">
+                <input type="button" class="delete btn btn-danger changestatus" name="{{ match.id }}" value="比赛恢复">
+            </td>
+
+            <td>
+                <form action="/admin/match/result/{{match.id}}/" name=form method="post" enctype="multipart/form-data"
+                      style="display: inline;margin-bottom: 5px;">
+                    {% csrf_token %}
+                    <label for="file-input" class="btn btn-default">上传文件</label>
+                    <input type="file" name="{{ match.id }}" placeholder="上传文件" onchange="submitform()" id="file-input"
+                           style="display: none;">
+                </form>
+            </td>
+            <td>
+                {{match.history_time}}
+            </td>
+
+        </tr>
+        {% endfor %}
+    </table>
+    {# 分页#}
+    <div id="course-page">
+        <nav aria-label="Page navigation">
+            <div class="pagination" style="margin: 0 0">
+                <ul class="pagination">
+                    {% if page2.has_previous %}
+                    <li><a href="/admin/match/{{pindex1}}/{{ page2.previous_page_number }}/" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span></a></li>
+                    {% endif %}
+
+                    {% for num in page2.paginator.page_range %}
+                    {% if pindex2 == num %}
+                    <li><a href="">{{ num }}</a></li>
+                    {% else %}
+                    <li><a href="/admin/match/{{pindex1}}/{{ num }}/">{{ num }}</a></li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if page2.has_next %}
+                    <li><a href="/admin/match/{{pindex1}}/{{ page2.next_page_number }}/" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span></a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </div>
+</div>
+
+{% endblock adminbody %}

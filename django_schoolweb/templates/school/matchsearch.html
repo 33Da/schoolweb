@@ -1,0 +1,129 @@
+{% extends "./base.html" %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static  'plug/css/style.css' %}">
+{% endblock %}
+{% block script %}
+    <script>
+        $(function () {
+            var slider = $("#scrollPics .slider");
+            //获取图片
+            var imgCon = $("#scrollPics .slider li");
+            //除第一张其余的图片全部隐藏
+            imgCon.not(imgCon.eq(0)).hide();
+            //定义页码
+            var num = $("#scrollPics .num")
+            //获取li标签的长度
+            //find()方法返回备选元素的后代元素
+            var len = slider.find("li").length;
+            var html_page = "";
+            index = 0;
+            //添加页码
+            for (var i = 0; i < len; i++) {
+                if (i === 0) {
+                    html_page += "<li class='active'>" + (i + 1) + "</li>"
+                }
+                else {
+                    html_page += "<li>" + (i + 1) + "</li>"
+                }
+            }
+            //输出原点
+            num.html(html_page)
+
+            //显示索引对应的图片
+            function showPic(index) {
+                imgCon.eq(index).show().siblings("li").hide();
+                num.find("li").eq(index).addClass("active").siblings("li").removeClass("active")
+            }
+
+            //原点点击事件
+            $(".num li").click(function () {
+                index = $(this).index()
+                showPic(index)
+            })
+            //图片轮播
+            $("#scrollPics").hover(function () {
+                clearInterval(window.timer)
+            }, function () {
+                window.timer = setInterval(function () {
+                    showPic(index);
+                    index++;
+                    if (index === len) {
+                        index = 0
+                    }
+                }, 2000)
+            }).trigger("mouseleave")//触发备选元素的指定事件
+
+        })
+
+    </script>
+{% endblock %}
+{% block body %}
+    <div class="container">
+        <div style="width: 100%;text-align: center;margin-top: 10px;" class="search d7">
+            {# 这里开始是搜索 #}
+            <form action="/match/search/1/" method="get">
+                <input type="text" placeholder="竞赛名" name="name">
+                <button type="submit"><span class="icon-search"></span></button>
+            </form>
+        </div>
+    </div>
+
+    {#    查找的消息#}
+    <div id="news-box">
+        <div>
+            <h2>竞赛 列表</h2>
+            <small>共{{ length }}条相关信息</small>
+        </div>
+        <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th>类型</th>
+                        <th>比赛名称</th>
+                        <th>发布时间</th>
+
+                    </tr>
+                    </thead>
+                    {% for match in page %}
+                    <tr>
+
+                         <td>
+                            {{ match.get_type_display }}
+                        </td>
+                        <td>
+                            <a href="/match/detail/{{ match.id }}/">{{ match.name }}</a>
+                        </td>
+                        <td>{{ match.publishtime }}</td>
+
+
+                    </tr>
+                    {% endfor %}
+                </table>
+    </div>
+    {#    分页#}
+    <div id="course-page">
+    <nav aria-label="Page navigation">
+        <div class="pagination" style="margin: 0 0">
+            <ul class="pagination">
+                {% if page.has_previous %}
+                    <li><a href="/match/search/{{ page.previous_page_number }}/" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span></a></li>
+                {% endif %}
+
+                {% for num in page.paginator.page_range %}
+                    {% if pindex == num %}
+                        <li><a href="">{{ num }}</a></li>
+                    {% else %}
+                        <li><a href="/match/search/{{ num }}/">{{ num }}</a></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page.has_next %}
+                    <li><a href="/match/search/{{ page.previous_page_number }}/" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span></a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+    </div>
+{% endblock %}

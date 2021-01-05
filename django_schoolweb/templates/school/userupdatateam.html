@@ -1,0 +1,138 @@
+{% extends "./userbase.html" %}
+{% load static %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-float-label.min.css' %}">
+<style>
+    /*控制下拉小箭头的*/
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+        /* position: absolute;
+        top: 12px;
+        right: 0px; */
+        border: 1px solid #ccc;
+        border-radius: 2px;
+        box-shadow: inset 0 1px #fff, 0 1px #eee;
+        background-color: #eee;
+        /* background:url('../images/icon.png') -188px -99px; */
+        background-image: -webkit-linear-gradient(top, #f0f0f0, #e6e6e6);
+        color: #666;
+    }
+
+    /* 去掉date中上下小三角，但是保留input类型为number的小三角。 */
+    input[type=date]::-webkit-inner-spin-button {
+        visibility: hidden;
+    }
+</style>
+{% endblock %}
+{% block script %}
+
+{% endblock %}
+{% block userbody %}
+
+
+<div id="news-box">
+    <h3>比赛名：{{ match.name }}</h3>
+    <span>注意：总人数不得超过{{ peoplenum }}人</span>
+    <form action="/user/team/updata/{{ team.id}}/" method="post" class="well text-center">
+        {% csrf_token %}
+        <div class="modal-body form-group input-group" style="margin-bottom: 0">
+                        <span class="has-float-label">
+                        <input type="text" name="teamname" id='teamname' class="form-control" placeholder="请输入"
+                               id="coursename" value="{{ team.name }}">
+                        <label for="teamname">队伍名</label>
+                        </span>
+
+            <div>
+                <span class="has-float-label">
+                       队长：
+                        </span>
+                <span class="has-float-label">
+                        <input name="captainusername" placeholder="学号" value="{{ captain.students.username }}">
+
+                        </span>
+
+                <span class="has-float-label">
+                        <input name="captainphone" placeholder="电话" value="{{ captain.phone }}">
+
+                        </span>
+            </div>
+            {% for i in userteam%}
+            <div>
+
+
+
+
+                <span class="has-float-label">
+                        队员：
+
+                        </span>
+                <span class="has-float-label">
+                        <input name="username" placeholder="学号" value="{{ i.students.username }}">
+
+                        </span>
+
+                <span class="has-float-label">
+                        <input name="phone" placeholder="电话" value="{{ i.phone }}">
+
+                        </span>
+
+
+
+            </div>
+
+
+            {% endfor %}
+            {% for i in elesinput%}
+            <div>
+
+                       <span class="has-float-label">
+                        队员：
+
+                        </span>
+
+                <span class="has-float-label">
+                        <input name="username" placeholder="学号">
+
+                        </span>
+
+                <span class="has-float-label">
+                        <input name="phone" placeholder="电话">
+
+                        </span>
+
+            </div>
+            {% endfor %}
+            <div>
+                <span>身份：指导老师</span>
+                <span class="has-float-label">
+                    {% if team.teacher_name == 'None' %}
+                        <input name="teachername" id="teachername" >
+                        <label for="teachername">姓名</label>
+                        </span>
+                <span class="has-float-label">
+                        <input name="teacherphone" id="teacherphone">
+                        <label for="teacherphone">电话</label>
+                        </span>
+                    {% else%}
+                     <input name="teachername" id="teachername" value="{{ team.teacher_name }}">
+                        <label for="teachername">姓名</label>
+                        </span>
+                <span class="has-float-label">
+                        <input name="teacherphone" id="teacherphone" value="{{ team.teacher_phone }}">
+                        <label for="teacherphone">电话</label>
+                        </span>
+                    {% endif %}
+
+
+            </div>
+            <div class="modal-footer">
+                <a href="/user/team/1/" class="btn btn-info">取消</a>
+                <input type="submit" value="修改" class="btn btn-primary">
+            </div>
+            <div style="color: red">{{ err }}</div>
+        </div>
+    </form>
+</div>
+{% endblock %}

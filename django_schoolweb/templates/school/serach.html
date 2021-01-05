@@ -1,0 +1,105 @@
+{% extends "./base.html" %}
+{% block script %}
+    <script>
+
+    </script>
+{% endblock %}
+{% block body %}
+    <div id="new-box">
+        <div>
+            <h2>查找列表</h2>
+            <small>共{{ length }}条相关信息</small>
+        </div>
+        <div id="all-search">
+            <ul style="list-style: none;">
+                {% if news != None %}
+                    {% for new in news %}
+                        <li style="border-bottom: #F2F2F2 2px dashed;padding-bottom:10px;margin-bottom: 15px;">
+                            <div class="page-header" style="margin: 0 0;border-bottom: 0;">
+                                <h4>
+                                    <a href="/new/detail/{{ new.id }}/">{{ new.title }}</a>
+                                    <small>关键字信息</small>
+                                </h4>
+                            </div>
+                            <div class="row">
+                                <div class="pull-left" style="margin-left: 15px;">
+                                    {% for pic in new.pics.all %}
+                                        {% if forloop.counter == 1 %}
+                                            <img src="/media/{{ pic.url }}" alt="" width="190px" height="120px">
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <div class="pull-left" style="margin-left: 10px;width: 60%;">
+                                    <p style="font-size: 20px;color: rgba(149,151,141,0.99)">
+                                        简介: {{ new.introduction }}</p>
+                                </div>
+                                <div class="pull-right" style="margin-top:100px;">
+                                    <small class="forright" style="bottom: 0px;">{{ new.publishtime }}</small>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                {% endif %}
+                {% if researchs != None %}
+                    {% for research in researchs %}
+                        <li style="border-bottom: #F2F2F2 2px dashed;padding-bottom:10px;margin-bottom: 15px;">
+                            <div class="page-header" style="margin: 0 0;border-bottom: 0;">
+                                <h4>
+                                    <a href="/new/detail/{{ research.id }}/">{{ research.title }}</a>
+                                    <small>相关科研</small>
+                                </h4>
+                            </div>
+                            <div class="row">
+                                <div class="pull-left" style="margin-left: 15px;">
+                                    {% for pic in research.pics.all %}
+                                        {% if forloop.counter == 1 %}
+                                            <img src="/media/{{ pic.url }}" alt="" width="190px" height="120px">
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <div class="pull-left" style="margin-left: 10px;width: 60%;">
+                                    <p style="font-size: 20px;color: rgba(149,151,141,0.99)">
+                                        简介: {{ research.introduction }}</p>
+                                </div>
+                                <div class="pull-right" style="margin-top:100px;">
+                                    <small class="forright" style="bottom: 0px;">{{ research.publishtime }}</small>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                {% endif %}
+                {% if losts != None %}
+                    {% for lost in losts %}
+                        <li style="border-bottom: #F2F2F2 2px dashed;padding-bottom:10px;margin-bottom: 15px;">
+                            <div>
+                                <h4>
+                                    <a href="/lost/detail/{{ lost.id }}/">
+                                        {{ lost.name }}
+                                    </a>
+                                    <small>{{ lost.get_type_display }}</small>
+                                </h4>
+                            </div>
+                            <div class="row">
+                                <div class="pull-left" style="margin-left: 15px;">
+                                    {% if lost.pic1 != none %}
+                                        <img src="/media/{{ lost.pic1 }}" alt="" width="190px" height="120px">
+                                    {% else %}
+                                        {% if lost.pic2 != none %}
+                                            <img src="/media/{{ lost.pic1 }}" alt="" width="190px" height="120px">
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                                <div class="pull-left" style="margin-left: 10px;width: 60%;">
+                                    <p style="font-size: 20px;color: rgba(149,151,141,0.99)">详情：{{ lost.detail }}</p>
+                                </div>
+                                <div class="pull-right" style="margin-top:100px;">
+                                    <small class="forright" style="bottom: 0px;">丢失事件：{{ lost.time }}</small>
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}

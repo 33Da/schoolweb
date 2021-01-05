@@ -1,0 +1,356 @@
+{% extends "./adminbase.html" %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-float-label.min.css' %}">
+{% endblock %}
+{% block script %}
+    <script>
+        function submitform() {
+            document.form.submit();
+        }
+
+        //使用ajax的post提交要加上geCookie()和csrfSafeMethod（）和ajaxSetup（）这三个函数，不然会报403,csrf
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                var csrftoken = getCookie('csrftoken');
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        $(function () {
+            $("#delete").click(function (event) {
+                let users = ""
+                $.each($('input:checkbox:checked'), function () {
+                    users = $(this).val() + "," + users;
+                });
+
+                $.ajax({
+                    async: true,
+                    url: '/admin/user/delete/',
+                    type: 'POST',
+                    traditional: true,
+                    data: {
+                        "users": users
+                    }
+                }).done(function (data) {
+                    console.log(data)
+                    if (data.ret == "success") {
+                        window.location.reload()
+                        console.log("success")
+                    } else {
+                        console.log("error")
+                    }
+
+                })
+            });
+
+            $("#find").click(function (event) {
+                let sex = $('#sex').val();
+                let takeschoolyear = $('#takeschoolyear').val();
+                let status = $('#status').val();
+                let username = $('#username').val();
+                let role = $('#role').val();
+                let last_name = $('#last_name').val();
+
+                let search = "?sex=" + sex + "&takeschoolyear=" + takeschoolyear + "&status=" + status + "&username=" + username + "&role=" + role + "&last_name=" + last_name
+
+                window.location.href = "http://127.0.0.1:8007/admin/user/1/" + search
+
+            });
+
+            $("#updaterole").click(function (event) {
+                let users = ""
+                $.each($('input:checkbox:checked'), function () {
+                    users = $(this).val() + "," + users;
+                });
+                let role = $('#role').val();
+
+                $.ajax({
+                    async: true,
+                    url: '/admin/user/role/',
+                    type: 'POST',
+                    traditional: true,
+                    data: {
+                        "users": users,
+                        "role": role,
+
+                    }
+                }).done(function (data) {
+                    console.log(data)
+                    if (data.ret == "success") {
+                        window.location.reload()
+                        console.log("success")
+                    } else {
+                        console.log("error")
+                    }
+
+                })
+
+            });
+
+            $("#update").click(function (event) {
+                let users = ""
+                $.each($('input:checkbox:checked'), function () {
+                    users = $(this).val() + "," + users;
+                });
+
+                let sex = $('#sex').val();
+                let takeschoolyear = $('#takeschoolyear').val();
+                let status = $('#status').val();
+                let username = $('#username').val();
+                let role = $('#role').val();
+                let last_name = $('#last_name').val();
+                $.ajax({
+                    async: true,
+                    url: '/admin/user/update/',
+                    type: 'POST',
+                    traditional: true,
+                    data: {
+                        "sex": sex,
+                        "takeschoolyear": takeschoolyear,
+                        "status": status,
+                        "username": username,
+                        "role": role,
+                        "last_name": last_name,
+                        "users": users
+                    }
+                }).done(function (data) {
+                    console.log(data)
+                    if (data.ret == "success") {
+                        window.location.reload()
+                        console.log("success")
+                    } else {
+                        console.log("error")
+                    }
+
+                })
+
+
+            })
+
+            $("#create").click(function (event) {
+
+                let sex = $('#sex').val();
+                let takeschoolyear = $('#takeschoolyear').val();
+                let status = $('#status').val();
+                let username = $('#username').val();
+                let role = $('#role').val();
+                let last_name = $('#last_name').val();
+                $.ajax({
+                    async: true,
+                    url: '/admin/user/create/',
+                    type: 'POST',
+                    traditional: true,
+                    data: {
+                        "sex": sex,
+                        "takeschoolyear": takeschoolyear,
+                        "status": status,
+                        "username": username,
+                        "role": role,
+                        "last_name": last_name,
+
+                    }
+                }).done(function (data) {
+                    console.log(data)
+                    if (data.ret == "success") {
+                        window.location.reload()
+                        console.log("success")
+                    } else {
+                        console.log("error")
+                    }
+
+                })
+
+
+            })
+
+        });
+    </script>
+
+{% endblock %}
+{% block adminbody %}
+    <div id="rightborder" class="pull-left" style="margin: 0;">
+        <div style="margin-bottom: 5px;">
+            <h3 style="margin-top: 0px;display: inline;">用户列表:&nbsp;&nbsp;</h3>
+            <form action="/admin/user/create/excle/" name=form method="post" enctype="multipart/form-data"
+                  style="display: inline;margin-bottom: 5px;">
+                {% csrf_token %}
+                <label for="file-input" class="btn btn-default">批量读入</label>
+                <input type="file" name="users" placeholder="批量读入" onchange="submitform()" id="file-input"
+                       style="display: none;">
+            </form>
+        </div>
+        <div class="well" style="text-align: center;background: rgba(250,250,250,0.35)">
+            <div class="modal-body form-group input-group" style="margin-bottom: 0">
+                    <span class="has-float-label">
+                        <input type="text" id="username" value='' placeholder="账号" class="form-control">
+                        <label for="username">账号</label>
+                    </span>
+                <span class="has-float-label">
+                        <input type="text" id="last_name" value='' placeholder="用户名" class="form-control">
+                        <label for="last_name">用户名</label>
+                    </span>
+                <div class="form-group has-float-label">
+                    <select id="role" class="form-control">
+                        <option value="">全部</option>
+                        <option value="3">学生</option>
+                        <option value="2">教师</option>
+                        <option value="1">管理员</option>
+                    </select>
+                    <label for="role">用户类型</label>
+                </div>
+                <div class="form-group has-float-label">
+                    <select id="takeschoolyear" class="form-control">
+                        <option value="">全部</option>
+                        <option value="2016">2016</option>
+                        <option value="2017">2017</option>
+                        <option value="2018">2018</option>
+                        <option value="2019">2019</option>
+                        <option value="2020">2020</option>
+                    </select>
+                    <label for="takeschoolyear">入学年份</label>
+                </div>
+                <div class="form-group has-float-label">
+                    <select class="form-control" id="deadline">
+                        <option value="0">无期限</option>
+                        <option value="3">3年</option>
+                        <option value="4">4年</option>
+                        <option value="5">5年</option>
+                        <option value="6">6年</option>
+                        <option value="7">7年</option>
+                        <option value="8">8年</option>
+                    </select>
+                    <label for="deadline">使用年限</label>
+                </div>
+                <div class="form-group has-float-label">
+                    <select id="sex" class="form-control">
+                        <option value="">全部</option>
+                        <option value="1">男</option>
+                        <option value="2">女</option>
+                    </select>
+                    <label for="sex">性别</label>
+                </div>
+                <div class="form-group has-float-label">
+                    <select id="status" class="form-control">
+                        <option value="">全部</option>
+                        <option value="0">在读</option>
+                        <option value="1">休学</option>
+                        <option value="2">在职</option>
+                        <option value="3">离职</option>
+                    </select>
+                    <label for="status">状态</label>
+                </div>
+            </div>
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>序号</th>
+                    <th>账号</th>
+                    <th>姓名</th>
+                    <th>性别</th>
+                    <th>类型</th>
+                    <th>入学年份</th>
+                    <th>状态</th>
+                    <th>账号期限</th>
+                </tr>
+                </thead>
+                {% for user in page %}
+                    <tr>
+                        <td>
+                            <input type="checkbox" value="{{ user.id }}" name="user"/>
+                        </td>
+                        {% widthratio 10 1 index as size %}
+                        <td name="{{ user.id }}">{{ size|add:forloop.counter }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.last_name }}</td>
+                        {% if user.sex == 1 %}
+                            <td>男</td>
+                        {% else %}
+                            <td>女</td>
+                        {% endif %}
+                        {% if user.role == 2 %}
+                            <td>教师</td>
+                        {% elif user.role == 1 %}
+                            <td>管理员</td>
+                        {% else %}
+                            <td>学生</td>
+                        {% endif %}
+
+                        <td>{{ user.takeschoolyear }}</td>
+                        {% if user.status == 0 %}
+                            <td>在读</td>
+                        {% elif user.status == 1 %}
+                            <td>休学</td>
+                        {% elif user.status == 2 %}
+                            <td>在职</td>
+                        {% else %}
+                            <td>离职</td>
+                        {% endif %}
+                        {% if user.livetime != 0 %}
+                            <td>{{ user.livetime }}年</td>
+                        {% else %}
+                            <td>无期限</td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </table>
+            <div>
+                <input type="button" id="create" value="添加用户" class="btn btn-primary">
+                <input type="button" id="delete" value="删除" class="btn btn-danger">
+                <input type="button" id="find" value="搜索" class="btn btn-primary">
+                <input type="button" id="updaterole" value="授权" class="btn btn-success">
+                <input type="button" id="update" value="重置" class="btn btn-warning">
+            </div>
+        </div>
+        {#    分页#}
+        <div id="course-page">
+            <nav aria-label="Page navigation">
+                <div class="pagination" style="margin: 0 0">
+                    <ul class="pagination">
+                        {% if page.has_previous %}
+                            <li><a href="/admin/user/{{ page.previous_page_number }}/" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span></a></li>
+                        {% endif %}
+
+                        {% for num in page.paginator.page_range %}
+                            {% if pindex == num %}
+                                <li><a href="">{{ num }}</a></li>
+                            {% else %}
+                                <li><a href="/admin/user/{{ num }}/">{{ num }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page.has_next %}
+                            <li><a href="/admin/user/{{ page.next_page_number }}/" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span></a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+{% endblock adminbody %}

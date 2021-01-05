@@ -1,0 +1,99 @@
+{% extends "./userbase.html" %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-float-label.min.css' %}">
+    <style>
+        /*控制下拉小箭头的*/
+        input[type="date"]::-webkit-calendar-picker-indicator {
+          display: inline-block;
+          width: 15px;
+          height: 15px;
+          /* position: absolute;
+          top: 12px;
+          right: 0px; */
+          border: 1px solid #ccc;
+          border-radius: 2px;
+          box-shadow: inset 0 1px #fff, 0 1px #eee;
+          background-color: #eee;
+          /* background:url('../images/icon.png') -188px -99px; */
+          background-image: -webkit-linear-gradient(top, #f0f0f0, #e6e6e6);
+          color: #666;
+        }
+        /* 去掉date中上下小三角，但是保留input类型为number的小三角。 */
+        input[type=date]::-webkit-inner-spin-button {
+          visibility: hidden;
+        }
+    </style>
+{% endblock %}
+{% block script %}
+
+{% endblock %}
+{% block userbody %}
+
+
+    <div id="news-box">
+    <h3>比赛名：{{ match.name }}</h3>
+    <span>注意：总人数不得超过{{ peoplenum }}人</span>
+ <form action="/user/match/sign/{{ match.id}}/{{ pindex }}/" method="post" class="well text-center" >
+        {% csrf_token %}
+        <div class="modal-body form-group input-group" style="margin-bottom: 0">
+                        <span class="has-float-label">
+                        <input type="text" name="teamname"  id='teamname' class="form-control" placeholder="请输入" id="coursename">
+                        <label for="teamname">队伍名</label>
+                        </span>
+            {% for i in peoplenum_range%}
+            <div>
+
+                {% if forloop.first %}
+                    <span>身份：队长</span>
+                    <span class="has-float-label">
+                        <input  name="captainusername" placeholder="学号">
+
+                        </span>
+
+                <span class="has-float-label">
+                        <input  name="captainphone" placeholder="电话">
+
+                        </span>
+
+                {% else %}
+                    <span>身份：队员</span>
+                <span class="has-float-label">
+                        <input  name="username" placeholder="学号">
+
+                        </span>
+
+                <span class="has-float-label">
+                        <input  name="phone" placeholder="电话">
+
+                        </span>
+
+                {% endif %}
+
+            </div>
+
+
+         {% endfor %}
+            <div>
+
+
+                 <span>身份：指导老师</span>
+                <span class="has-float-label">
+                        <input  name="teachername" id="teachername">
+                        <label for="teachername">姓名</label>
+                        </span>
+                <span class="has-float-label">
+                        <input  name="teacherphone" id="teacherphone">
+                        <label for="teacherphone">电话</label>
+                        </span>
+
+            </div>
+        <div class="modal-footer">
+            <a href="/user/match/{{ pindex }}/" class="btn btn-info">取消</a>
+            <input type="submit" value="报名" class="btn btn-primary">
+        </div>
+        <div style="color: red">{{ err }}</div>
+            </div>
+    </form>
+    </div>
+{% endblock %}

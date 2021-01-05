@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% load static %}
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'bootstrap/css/default.css' %}" rel="stylesheet">
+    <script src="../../static/src/js/jquery.min.js"></script>
+    <script src="../../static/bootstrap/js/bootstrap.min.js"></script>
+    <script>
+        $(function () {
+
+        })
+    </script>
+    <title>管理员登录</title>
+</head>
+<body>
+<div class="topdiv">
+    {# 顶部 #}
+    <div>
+        <h3>管理员</h3>
+        <h4>登陆界面</h4>
+        <div>
+            <a href="/index/" id="home"><span class="glyphicon glyphicon-home"></span></a>
+            <strong><span>  |  </span></strong>
+            <a href="" id="return"><span class="glyphicon glyphicon-share-alt"></span></a>
+        </div>
+    </div>
+    <form action="/admin/login/" method="post" class="form-inline">
+        {% csrf_token %}
+        <div>
+            <input type="text" name="username" placeholder="请输入用户名" class="form-control">
+        </div>
+        <div style="padding: 0">
+            <span>{{ error }}</span>
+        </div>
+        <div>
+            <input type="password" name="password" placeholder="请输入密码" class="form-control">
+        </div>
+        <div>
+            <input type="submit" value="登录" class="input_submit btn btn-primary" class="">
+            <div></div>
+        </div>
+    </form>
+</div>
+</body>
+</html>

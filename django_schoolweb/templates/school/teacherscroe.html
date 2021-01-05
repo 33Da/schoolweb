@@ -1,0 +1,176 @@
+{% extends "./userbase.html" %}
+{% block script %}
+    <script>
+        //使用ajax的post提交要加上geCookie()和csrfSafeMethod（）和ajaxSetup（）这三个函数，不然会报403,csrf
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                var csrftoken = getCookie('csrftoken');
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+        $(function () {
+            $(".delete").click(function (event) {
+                let id = $(this).attr("name")
+
+                $.ajax({
+                    async: true,
+                    url: '/user/class/delete/' + id + "/",
+                    type: 'GET',
+                    traditional: true,
+
+                }).done(function (data) {
+                    console.log(data)
+                    if (data.ret == "success") {
+                        window.location.reload()
+                        console.log("success")
+                    } else {
+                        console.log("error")
+                    }
+
+                })
+            });
+
+            $(".score").click(function (event) {
+                let id = $(this).attr("name")
+                console.log(id)
+                let total = $("#total_" + id).val()
+                let usually = $("#usually_" + id).val()
+                let exam = $("#exam_" + id).val()
+                $.ajax({
+                    async: true,
+                    url: '/user/teacher/savescore/' + id + '/',
+                    type: 'POST',
+                    traditional: true,
+                    data: {
+                        "usually": usually,
+                        "exam": exam,
+                        "total": total
+                    }
+
+                }).done(function (data) {
+                    console.log(data)
+                    if (data.ret == "success") {
+                        window.location.reload()
+                        console.log("success")
+                    } else {
+                        console.log("error")
+                    }
+
+                })
+            });
+
+            $("#subject").change(function (event) {
+                var form = document.getElementById("myform");
+                form.submit();
+            })
+        })
+    </script>
+{% endblock %}
+{% block userbody %}
+    <div id="rightborder" class="pull-left" style="margin: 0;">
+        <form action='/user/teacher/score/{{ pindex }}/' method="get" id="myform">
+            <span style="font-size: large;">课程安排:</span>
+            <select name="subject" id="subject">
+                <option value="0">全部</option>
+                {% for subject in subjects %}
+                    {% if mysubject == subject.id %}
+                        <option value="{{ subject.id }}" selected="selected">{{ subject.name }}</option>
+                    {% else %}
+                        <option value="{{ subject.id }}">{{ subject.name }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </form>
+        <table class="table table-hover table-bordered" style="margin-top: 5px;">
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>学生</th>
+                <th>学号</th>
+                <th>课程代号</th>
+                <th>课程名称</th>
+                <th>学分</th>
+                <th>平时分</th>
+                <th>考试成绩</th>
+                <th>总分</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            {% for class in page %}
+                <tr>
+                    {% widthratio 10 1 index as size %}
+                    <td name="{{ class.id }}">{{ size|add:forloop.counter }}</td>
+                    <td>{{ class.student.last_name }}</td>
+                    <td>{{ class.student.username }}</td>
+                    <td>{{ class.subject.code }}</td>
+                    <td>{{ class.subject.name }}</td>
+                    <td>{{ class.subject.credit }}</td>
+                    {% if class.usually_grade == None %}
+                        <td><input type="text" value="" id="usually_{{ class.id }}" class="course-input"></td>
+                        <td><input type="text" value="" id="exam_{{ class.id }}" class="course-input"></td>
+                        <td><input type="text" value="" id="total_{{ class.id }}" class="course-input"></td>
+                    {% else %}
+                        <td><input type="text" value="{{ class.usually_grade }}" id="usually_{{ class.id }}"
+                                   class="course-input"></td>
+                        <td><input type="text" value="{{ class.exam_grade }}" id="exam_{{ class.id }}"
+                                   class="course-input"></td>
+                        <td><input type="text" value="{{ class.total }}" id="total_{{ class.id }}" class="course-input">
+                        </td>
+                    {% endif %}
+                    <td>
+                        <input type="button" class="score btn btn-info" name="{{ class.id }}" value="录入">
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        {#    分页#}
+        <div id="course-page">
+            <nav aria-label="Page navigation">
+                <div class="pagination" style="margin: 0 0">
+                    <ul class="pagination">
+                        {% if page.has_previous %}
+                            <li><a href="/user/teacher/score/{{ page.previous_page_number }}/" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span></a></li>
+                        {% endif %}
+
+                        {% for num in page.paginator.page_range %}
+                            {% if pindex == num %}
+                                <li><a href="">{{ num }}</a></li>
+                            {% else %}
+                                <li><a href="/user/teacher/score/{{ num }}/">{{ num }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page.has_next %}
+                            <li><a href="/user/teacher/score/{{ page.next_page_number }}/" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span></a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+{% endblock %}

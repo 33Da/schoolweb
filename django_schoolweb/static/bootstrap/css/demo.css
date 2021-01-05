@@ -1,0 +1,129 @@
+*
+/* 初始化 */
+{
+    padding: 0px;
+    margin: 0px;
+}
+div
+{padding: 0;}
+.nav-li1{
+	font-size: 24px;
+	color: white;
+	text-decoration: none;
+	width:5%;
+	margin-right: 50px;
+}
+.HeadPortrait
+/* 头像 */
+{
+    margin:0px;
+    padding: 0px;
+}
+
+/* 导航条特效 */
+#bs-example-navbar-collapse-1 .nav li a
+{
+    background-color:transparent; 
+    flood-color: rgb(209, 209, 209);
+    border-bottom: 2px solid transparent;
+}
+#bs-example-navbar-collapse-1 .navbar-x li:not(:first-child):hover
+{
+    background-color: rgb(211, 211, 211);
+}
+#bs-example-navbar-collapse-1 .navbar-y li a:hover
+{
+    background-color: rgb(211, 211, 211);
+    
+}
+/* 导航条特效 */
+/* 导航条底部 */
+.top-navbar
+{
+    margin-bottom: 0px;
+}
+.product
+/* 产品边框 */
+{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 5px;
+    
+}
+.bd
+/* 产品阴影 */
+{
+    border: 2px solid rgba(14, 8, 19, 0.37);
+    box-shadow:darkgray 8px 5px 8px 1px;
+}
+.father
+{
+    text-align: center;
+    margin: 20px 0;
+}
+
+/* 轮播图的左右处理 */
+.carousel-control.right, .carousel-control.left
+{
+    background-image: none;
+}
+.carousel-control.right:hover
+{
+    background-image: -webkit-linear-gradient(left, rgba(0, 0, 0, .0001) 0%, rgba(0, 0, 0, .5) 100%);
+    background-image:      -o-linear-gradient(left, rgba(0, 0, 0, .0001) 0%, rgba(0, 0, 0, .5) 100%);
+    background-image: -webkit-gradient(linear, left top, right top, from(rgba(0, 0, 0, .0001)), to(rgba(0, 0, 0, .5)));
+    background-image:         linear-gradient(to right, rgba(0, 0, 0, .0001) 0%, rgba(0, 0, 0, .5) 100%);
+}
+.carousel-control.left:hover
+{
+    background-image: -webkit-linear-gradient(left, rgba(0, 0, 0, .5) 0%, rgba(0, 0, 0, .0001) 100%);
+    background-image:      -o-linear-gradient(left, rgba(0, 0, 0, .5) 0%, rgba(0, 0, 0, .0001) 100%);
+    background-image: -webkit-gradient(linear, left top, right top, from(rgba(0, 0, 0, .5)), to(rgba(0, 0, 0, .0001)));
+    background-image:         linear-gradient(to right, rgba(0, 0, 0, .5) 0%, rgba(0, 0, 0, .0001) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#80000000', endColorstr='#00000000', GradientType=1);
+    background-repeat: repeat-x;
+}
+/* 轮播图的左右处理 */
+
+/*失物招领告示*/
+#nt-example1 {
+	max-width: 620px;
+	margin: auto;
+}
+
+#nt-example1-container {
+	text-align: center;
+}
+
+#nt-example1-container i {
+	font-size: 36px;
+	margin: 8px;
+	cursor: pointer;
+	-webkit-transition: all 0.1s ease-in-out;
+    -moz-transition: all 0.1s ease-in-out;
+    -ms-transition: all 0.1s ease-in-out;
+    -o-transition: all 0.1s ease-in-out;
+    transition: all 0.1s ease-in-out;
+}
+
+#nt-example1-container i:hover {
+	color: #333;
+}
+
+#nt-example1 li {
+	color: #4e4e4e;
+	background: #F2F2F2;
+	overflow: hidden;
+	height: 40px;
+	padding: 10px;
+	line-height: 30px;
+	list-style: none;
+	font-size: 20px;
+	text-align: left;
+	border-bottom: 1px dotted #2c8162;
+}
+
+#nt-example1 li:hover {
+	background: #FFF;
+}

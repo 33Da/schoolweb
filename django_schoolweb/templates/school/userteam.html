@@ -1,0 +1,151 @@
+{% extends "./userbase.html" %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-float-label.min.css' %}">
+    <style>
+        /*控制下拉小箭头的*/
+        input[type="date"]::-webkit-calendar-picker-indicator {
+          display: inline-block;
+          width: 15px;
+          height: 15px;
+          /* position: absolute;
+          top: 12px;
+          right: 0px; */
+          border: 1px solid #ccc;
+          border-radius: 2px;
+          box-shadow: inset 0 1px #fff, 0 1px #eee;
+          background-color: #eee;
+          /* background:url('../images/icon.png') -188px -99px; */
+          background-image: -webkit-linear-gradient(top, #f0f0f0, #e6e6e6);
+          color: #666;
+        }
+        /* 去掉date中上下小三角，但是保留input类型为number的小三角。 */
+        input[type=date]::-webkit-inner-spin-button {
+          visibility: hidden;
+        }
+    </style>
+{% endblock %}
+{% block script %}
+    <script>
+        $(function () {
+            $(".deletesign").click(function (event) {
+                let id = $(this).attr("name")
+
+                $.ajax({
+                    async: true,
+                    url: '/user/team/delete/' + id + "/",
+                    type: 'GET',
+                    traditional: true,
+
+                }).done(function (data) {
+                    console.log(data)
+                    if (data.ret == "success") {
+                        window.location.reload()
+                        console.log("success")
+                    } else {
+                        console.log("error")
+                    }
+
+                })
+            });
+
+        })
+    </script>
+{% endblock %}
+{% block userbody %}
+
+<div class="container">
+        <div style="width: 100%;text-align: center;margin-top: 10px;" class="search d7">
+            {# 这里开始是搜索 #}
+            <form action="/user/team/1/" method="get">
+                <input type="text" placeholder="竞赛名" name="name">
+                <button type="submit"><span class="icon-search"></span></button>
+            </form>
+        </div>
+    </div>
+<div id="rightborder" class="pull-left" style="margin: 0;">
+
+
+            <div role="tabpanel" class="tab-pane active pull-left" >
+
+
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th>参加的比赛</th>
+                        <th>队伍名</th>
+                         <th>比赛简介</th>
+                         <th>详情</th>
+                         <th>操作</th>
+                         <th>状态</th>
+
+
+                    </tr>
+                    </thead>
+                    {% for team in page %}
+                    <tr>
+
+
+                        <td>
+                            {{ team.team.match.name }}
+                        </td>
+
+                        <td>{{ team.team.name }}</td>
+                        <td>{{ team.team.match.abstract }}</td>
+                        <td> <a href="/user/team/detail/{{ team.team.id }}/" class="btn btn-info">查看</a></td>
+                        <td>
+                              {% if team.team.check == 0 %}
+                            <a href="/user/team/updata/{{ team.team.id }}/" class="btn btn-info">修改队伍信息</a>
+                             <input type="button" class="delete btn btn-danger deletesign" name="{{ team.team.id }}" value="取消报名">
+
+                        {% else %}
+                            <a href="/user/team/updata/{{ team.team.id }}/" class="btn btn-info">修改队伍信息</a>
+                        {% endif %}
+                        </td>
+
+                        <td>{{ team.team.get_check_display }}</td>
+
+
+
+
+                    </tr>
+                    {% endfor %}
+                </table>
+                {# 分页#}
+                <div >
+                    <nav aria-label="Page navigation">
+                        <div class="pagination" style="margin: 0 0">
+                            <ul class="pagination">
+                                {% if page1.has_previous %}
+                                <li><a href="/user/match/{{ page1.previous_page_number }}/{{ pindex2 }}/{{ pindex3 }}/{{ pindex4 }}/"
+                                       aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span></a></li>
+                                {% endif %}
+
+                                {% for num in page1.paginator.page_range %}
+                                {% if pindex1 == num %}
+                                <li><a href="">{{ num }}</a></li>
+                                {% else %}
+                                <li><a href="/user/match/{{ num }}/{{ pindex2 }}/{{ pindex3 }}/{{ pindex4 }}/">{{ num
+                                    }}</a></li>
+                                {% endif %}
+                                {% endfor %}
+
+                                {% if page1.has_next %}
+                                <li>
+                                    <a href="/user/match/{{ page1.next_page_number }}/{{ pindex2 }}/{{ pindex3 }}/{{ pindex4 }}/"
+                                       aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span></a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+
+
+            </div>
+
+</div>
+
+{% endblock %}

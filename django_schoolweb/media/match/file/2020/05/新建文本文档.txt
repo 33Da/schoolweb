@@ -1,0 +1,16 @@
+前端：
+vue：
+element：
+axios：
+vue-element-admin
+
+
+后端：
+django restframework
+
+jwt校验
+
+百度飞浆
+
+xadmin
+

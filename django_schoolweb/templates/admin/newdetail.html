@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>详情</title>
+    {% load static %}
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+</head>
+<body>
+<h2 style="text-align: center;margin-bottom:20px;">信息修改页面</h2>
+<div style="width: 60%;margin: 0 auto" class="well modal-content">
+    <form action="/admin/new/update/{{ new.id }}/" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="newtitle">消息题目</label>
+            <input type="text" placeholder="题目" name="title" value="{{ new.title }}" id="newtitle" class="form-control">
+        </div>
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label for="newintroduction">简介</label>
+                <textarea id="newintroduction" name="introduction" cols="30" rows="2"
+                          class="form-control" style="height: 100px">{{ new.introduction }}</textarea>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="blankcontent">内容</label>
+                <textarea name="content" cols="30" rows="2"
+                          id="blankcontent" class="form-control"
+                          style="height: 100px">{{ new.content }}</textarea>
+            </div>
+        </div>
+        <div class="page-header" style="margin: 0;">
+        </div>
+            {% if piclen > 0%}
+                <h5>附属图片：</h5>
+            {% endif %}
+        <div class="row">
+            {% for pic in new.pics.all %}
+                <div class="col-md-4" style="margin: 10px 0">
+                    <img src="/media/{{ pic.url }}" alt="{{ pic.name }}" width="200px" height="200px">
+                </div>
+            {% endfor %}
+        </div>
+        {% for file in new.files.all %}
+            <div class="page-header">
+                <h5>附属文件：
+                    <small><a href="/media/{{ file.url }}">{{ file.name }}</a></small>
+                </h5>
+            </div>
+        {% endfor %}
+        <div style="text-align: center">
+            <label for="newfiles" class="btn btn-info">文件重新上传</label>
+            <input type="file" name="files" id="newfiles" style="display: none;">
+            <label for="newpics" class="btn btn-info">图片重新上传</label>
+            <input type="file" name="pics" id="newpics" style="display: none;">
+            <input type="submit" value="修改" class="btn btn-info">
+            <a href="/admin/new/1/" class="btn btn-default">返回</a>
+        </div>
+    </form>
+    <div style="float: right;bottom: 0px;">最近修改时间：{{ new.publishtime }}</div>
+    <div style="color: red">{{ err }}</div>
+    <!--源码-->
+</div>
+</body>
+</html>

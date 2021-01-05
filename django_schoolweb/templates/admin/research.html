@@ -1,0 +1,173 @@
+{% extends "./adminbase.html" %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-float-label.min.css' %}">
+{% endblock %}
+{% block script %}
+    <script>
+        //使用ajax的post提交要加上geCookie()和csrfSafeMethod（）和ajaxSetup（）这三个函数，不然会报403,csrf
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                var csrftoken = getCookie('csrftoken');
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        $(function () {
+            $(".delete").click(function (event) {
+                let id = $(this).attr("name")
+
+                $.ajax({
+                    async: true,
+                    url: '/admin/research/delete/' + id + "/",
+                    type: 'GET',
+                    traditional: true,
+
+                }).done(function (data) {
+                    console.log(data)
+                    if (data.ret == "success") {
+                        window.location.reload()
+                        console.log("success")
+                    } else {
+                        console.log("error")
+                    }
+
+                })
+            });
+
+
+        })
+
+    </script>
+
+{% endblock %}
+{% block adminbody %}
+    <div id="rightborder" class="pull-left" style="margin: 0;">
+        <div class="pull-left" style="margin-bottom: 5px;">
+            <h3 style="margin: 0px" class="pull-left">科研列表:&nbsp;&nbsp;</h3>
+            <button class="btn btn-xs btn-primary glyphicon glyphicon-plus" class="pull-left" type="button"
+                    data-toggle="modal" data-target="#myModal" id="create"></button>
+        </div>
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>名称</th>
+                <th>简介</th>
+                <th>发布时间</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            {% for research in page %}
+                <tr>
+                    {% widthratio 10 1 index as size %}
+                    <td name="{{ research.id }}">{{ size|add:forloop.counter }}</td>
+                    <td>
+                        <a href="/research/detail/{{ research.id }}/">{{ research.title }}</a>
+                    </td>
+                    <td>{{ research.content }}</td>
+                    <td>{{ research.publishtime }}</td>
+
+                    <td>
+                        <a href="/admin/research/detail/{{ research.id }}/" class="btn btn-info">修改</a>
+                        <input type="button" class="delete btn btn-danger" name="{{ research.id }}" value="删除">
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        {#    分页#}
+        <div id="course-page">
+            <nav aria-label="Page navigation">
+                <div class="pagination" style="margin: 0 0">
+                    <ul class="pagination">
+                        {% if page.has_previous %}
+                            <li><a href="/admin/research/{{ page.previous_page_number }}/" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span></a></li>
+                        {% endif %}
+
+                        {% for num in page.paginator.page_range %}
+                            {% if pindex == num %}
+                                <li><a href="">{{ num }}</a></li>
+                            {% else %}
+                                <li><a href="/admin/research/{{ num }}/">{{ num }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page.has_next %}
+                            <li><a href="/admin/research/{{ page.next_page_number }}/" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span></a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+    {#模态框#}
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title " id="myModalLabel">创建科研</h4>
+                </div>
+                <form action="/admin/research/create/" method="post" enctype="multipart/form-data" class="well text-center" >
+                    {% csrf_token %}
+                    <div class="modal-body form-group input-group" style="margin-bottom: 0">
+                        <span class="has-float-label">
+                        <input type="text" name="title" class="form-control" placeholder="请输入" id="coursename">
+                        <label for="coursename">题目</label>
+                        </span>
+                    </div>
+                    <div class="form-group has-float-label">
+                        <textarea name="introduction" id="blankarea" cols="30" rows="2" class="form-control"></textarea>
+                        <label for="blankarea">简介</label>
+                    </div>
+                    <div class="form-group has-float-label">
+                        <textarea name="content" id="blankcontent" cols="30" rows="2" class="form-control"></textarea>
+                        <label for="blankcontent">内容</label>
+                    </div>
+
+                    <div class="modal-footer">
+                        <div class="forleft">
+                            <div class="form-group" style="display: inline;margin-right: 10px;">
+                                <label for="file-1" class="btn btn-primary">附件</label>
+                                <input type="file" name="files" multiple="" style="display: none;" id="file-1">
+                            </div>
+                            <div class="form-group" style="display: inline;">
+                                <label for="pic-1" class="btn btn-primary">相关图片</label>
+                                <input type="file" name="pics" multiple="" id="pic-1" style="display: none;">
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <input type="submit" value="创建科研" class="btn btn-primary">
+                    </div>
+                    <div style="color: red">{{ err }}</div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock adminbody %}

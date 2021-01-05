@@ -1,0 +1,260 @@
+{% extends "./userbase.html" %}
+{% block script %}
+    <script>
+        //使用ajax的post提交要加上geCookie()和csrfSafeMethod（）和ajaxSetup（）这三个函数，不然会报403,csrf
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                var csrftoken = getCookie('csrftoken');
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        $(function () {
+            $("#major").empty();
+            var val = $("#college option:selected").val();
+
+            $.ajax({
+                type: "POST",
+                url: "/major/",
+                dataType: "json",
+                data: {p_id: val},
+                success: function (data) {
+                    data = data["data"];
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i]["is_user"] == "False") {
+                            var pOption = "<option value='" + data[i]["id"] + "'>" + data[i]["name"] + "</option>";
+                        } else {
+                            let selected = "selected"
+                            var pOption = "<option value='" + data[i]["id"] + "' selected='" + selected + "'>" + data[i]["name"] + "</option>";
+                        }
+
+                        $("#major").append(pOption);
+                    }
+                }
+            });
+
+            $("#college").change(function () {
+
+                $("#major").empty();
+                var val = $("#college option:selected").val();
+                $.ajax({
+                    type: "POST",
+                    url: "/major/",
+                    dataType: "json",
+                    data: {p_id: val},
+                    success: function (data) {
+                        data = data["data"];
+                        for (var i = 0; i < data.length; i++) {
+                            var pOption = "<option value='" + data[i]["id"] + "'>" + data[i]["name"] + "</option>";
+                            $("#major").append(pOption);
+                        }
+                    }
+                });
+            });
+
+
+        })
+
+
+    </script>
+{% endblock %}
+
+{% block userbody %}
+    <div class="container">
+    <div class="pull-left row" id="rightbox">
+        <div class="col-md-10" id="rightimformation">
+            <form action="/user/detail/update/{{ user.id }}/" method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-1 forright">
+                        {% if user.role == 1 %}
+                            <span>学号:</span>
+                        {% else %}
+                            <span>编号:</span>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3 forleft ">
+                        <span>{{ user.username }}</span>
+                    </div>
+                    <div class="col-md-1 forright">
+                        <span>姓名:</span>
+                    </div>
+                    <div class="col-md-3 forleft">
+                        <input type="text" name="last_name" value="{{ user.last_name }}">
+                    </div>
+                    <div class="col-md-1 forright">
+                        <span>性别:</span>
+                    </div>
+                    <div class="col-md-3 forleft">
+                        <select name="sex" id="sex">
+                            {% if user.sex == 1 %}
+                                <option value="1" selected="selected">男</option>
+                                <option value="2">女</option>
+                            {% else %}
+                                <option value="1">男</option>
+                                <option value="2" selected="selected">女</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-1 forright">
+                        <span>所属学院:</span>
+                    </div>
+                    <div class="col-md-3 forleft">
+                        <select name="college" id="college">
+                            {% for foo in college %}
+                                {% if foo.id == user.college.id %}
+                                    <option value="{{ foo.id }}" selected="selected">{{ foo.name }}</option>
+                                {% else %}
+                                    <option value="{{ foo.id }}">{{ foo.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-1 forright">
+                        <span>班级:</span>
+                    </div>
+                    <div class="col-md-3 forleft">
+                        <input type="text" name="schoolclass" value="{{ user.schoolclass }}">
+                    </div>
+                    {% if user.role == 3 %}
+                        <div class="col-md-1 forright">
+                            <span>专业:</span>
+                        </div>
+                        <div class="col-md-3 forleft">
+                            <select name="major" id="major">
+                            </select>
+                        </div>
+                    {% else %}
+                        <div class="col-md-1 forright">
+                            <span>学历:</span>
+                        </div>
+                        <div class="col-md-3 forleft">
+                            <select name="background" id="background">
+                                {% for foo in background %}
+                                    {% if forloop.counter0 == user.educational_background %}
+                                        <option value="{{ forloop.counter0 }}" selected="selected">{{ foo }}</option>
+                                    {% else %}
+                                        <option value="{{ forloop.counter0 }}">{{ foo }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="row">
+                    <div class="col-md-1 forright">
+                        <span>政治面貌:</span>
+                    </div>
+                    <div class="col-md-3 forleft">
+                        <select name="political" id="political">
+                            {% for foo in political %}
+                                {% if forloop.counter0 == user.political %}
+                                    <option value="{{ forloop.counter0 }}" selected="selected">{{ foo }}</option>
+                                {% else %}
+                                    <option value="{{ forloop.counter0 }}">{{ foo }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-1 forright">
+                        <span>证件号:</span>
+                    </div>
+                    <div class="col-md-3 forleft">
+                        <input type="text" name="idcard" value="{{ user.idcard }}">
+                    </div>
+                    <div class="col-md-1 forright">
+                        <span>入学年份:</span>
+                    </div>
+                    <div class="col-md-3 forleft">
+                        <span>{{ user.takeschoolyear }}</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-1 forright">
+                        <span>电话:</span>
+                    </div>
+                    <div class="col-md-3 forleft">
+                        <input type="text" name="phone" value="{{ user.phone }}">
+                    </div>
+                    <div class="col-md-1 forright">
+                        <span>微信:</span>
+                    </div>
+                    <div class="col-md-3 forleft">
+                        <input type="text" name="weixin" value="{{ user.weixin }}">
+                    </div>
+                    <div class="col-md-1 forright">
+                        <span>QQ:</span>
+                    </div>
+                    <div class="col-md-3 forleft">
+                        <input type="text" name="qq" value="{{ user.qq }}">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-1 forright">
+                        <span>Email:</span>
+                    </div>
+                    <div class="col-md-3 forleft">
+                        <input type="text" name="email" value="{{ user.email }}">
+                    </div>
+                    <div class="col-md-1 forright">
+                        <span>家庭住址:</span>
+                    </div>
+                    <div class="col-md-3 forleft">
+                        <input type="text" name="address" value="{{ user.address }}">
+                    </div>
+                    <div class="col-md-4"></div>
+                </div>
+                <div style="text-align: center;">
+                    <input type="submit" value="保存" class="input_submit btn btn-primary">
+                </div>
+            </form>
+        </div>
+        <div class="col-md-2">
+            <form action="/user/pic/{{ user.id }}/" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div style="text-align: center;">
+                    <label>
+                        {% if user.head_pic == "" %}
+                            <img src="/static/img/head.JPG" alt="" width="100px" height="100px"
+                                 class="img-responsive imgheader">
+                        {% else %}
+                            <img src="/media/{{ user.head_pic }}/" alt="" width="100px" height="100px"
+                                 class="img-circle imgheader">
+                        {% endif %}
+                        <a href=""><input type="file" name="head_pic" class="upload" style="display: none"></a>
+                    </label>
+                </div>
+                <div style="text-align: center; margin-top: 3px;">
+                    <input type="submit" value="上传" class="btn btn-default btn-xs">
+                </div>
+            </form>
+        </div>
+        <div style="color: red">{{ err }}</div>
+    </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "./base.html" %}
+
+{% block body %}
+        <div id="news-box">
+        <div>
+            <h2>所有科研结果</h2>
+            <small>共有{{ length }}项科研结果</small>
+        </div>
+        <div>
+            <ul style="list-style: none">
+                {% for research in page %}
+                    <li style="border-bottom: #F2F2F2 2px dashed;padding-bottom:10px;margin-bottom: 15px;">
+                        {% widthratio 10 0 index as size %}
+                        <h4>
+                            <a href="/research/detail/{{ research.id }}/">
+                                {{ research.title }}
+                            </a>
+                        </h4>
+                        <div class="row">
+                            <div class="pull-left" style="margin-left: 15px;">
+                                {% for pic in research.pics.all %}
+                                    {% if forloop.counter == 1 %}
+                                        <img src="/media/{{ pic.url }}" alt="" width="190px" height="120px">
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <div class="pull-left" style="margin-left: 10px;width: 60%;">
+                                <p style="font-size: 20px;color: rgba(149,151,141,0.99)">简介: {{ research.introduction }}</p>
+                            </div>
+                            <div class="pull-right" style="margin-top:100px;">
+                                <small class="forright"style="bottom: 0px;">{{ research.publishtime }}</small>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {#    分页#}
+    <div id="course-page">
+        <nav aria-label="Page navigation">
+            <div class="pagination" style="margin: 0 0">
+                <ul class="pagination">
+                    {% if page.has_previous %}
+                        <li><a href="/new/{{ page.previous_page_number }}/" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span></a></li>
+                    {% endif %}
+
+                    {% for num in page.paginator.page_range %}
+                        {% if pindex == num %}
+                            <li><a href="">{{ num }}</a></li>
+                        {% else %}
+                            <li><a href="/new/{{ num }}/">{{ num }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page.has_next %}
+                        <li><a href="/new/{{ page.next_page_number }}/" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span></a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </div>
+{% endblock body %}

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    {% load static %}
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'bootstrap/css/icon.css' %}" rel="stylesheet">
+    <link href="{% static 'bootstrap/css/demo.css' %}" rel="stylesheet">
+    <link href="{% static 'bootstrap/css/school_index.css' %}" rel="stylesheet">
+    {% block css %}
+    {% endblock %}
+    <script src="{% static 'src/js/jquery.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}" type="text/javascript"></script>
+    {% block script %}{% endblock %}
+
+</head>
+<body>
+<header id="header">
+    <!-- 导航 -->
+    <nav class="navbar navbar-default navbar-static-top top-navbar" style="margin: 0px">
+        <div class="container-fluid">
+            <!-- 菜单 -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-x" id="navbar-x">
+                    {% if menu == 0 %}
+                        <li><a href="/index/" style="background: palegoldenrod">首页</a></li>
+                    {% else %}
+                        <li><a href="/index/">首页</a></li>
+                    {% endif %}
+                    {% if menu == 1 %}
+                        <li><a href="/school/1/" style="background: palegoldenrod">学校概括</a></li>
+                    {% else %}
+                        <li><a href="/school/1/">学校概括</a></li>
+                    {% endif %}
+                    {% if menu == 2 %}
+                        <li><a href="/match/1/1/1/1/" style="background: palegoldenrod">比赛</a></li>
+                    {% else %}
+                        <li><a href="/match/1/1/1/1/">比赛</a></li>
+                    {% endif %}
+                    {% if menu == 3 %}
+                        <li><a href="/lost/1/1/" style="background: palegoldenrod">失物招领</a></li>
+                    {% else %}
+                        <li><a href="/lost/1/1/">失物招领</a></li>
+                    {% endif %}
+                    {% if menu == 4 %}
+                        <li><a href="/more/" style="background: palegoldenrod">了解更多</a></li>
+                    {% else %}
+                        <li><a href="/more/">了解更多</a></li>
+                    {% endif %}
+
+                </ul>
+                <form action="/search/" method="get" class="navbar-form navbar-left hidden-sm">
+                    <div class="form-group">
+                        <input type="text" name="search" class="form-control" placeholder="想搜....">
+                    </div>
+                    <button class="btn btn-default icon-search" type="submit"></button>
+                </form>
+                <ul class="nav navbar-nav navbar-right navbar-y">
+                    {% if username != '' %}
+                        {% if usertype == 1 %}
+                            <li>
+                                <a href="/admin/user/1/" class="icon-user">{{ username }}</a>
+                            </li>
+                            <li style="margin-top:7px">
+                                <form action="/admin/logout/" method="get">
+                                    <input type="submit" value="登出" class="btn btn-default">
+                                </form>
+                            </li>
+                        {% else %}
+                            <li>
+                                <a href="/user/detail/" class="icon-user">{{ username }}</a>
+                            </li>
+                            <li style="margin-top:7px">
+                                <form action="/logout/" method="get">
+                                    <input type="submit" value="登出" class="btn btn-default">
+                                    <a href="/repassword/" class="btn btn-default btn-sm"
+                                       style="border: #ebccd1 1px solid;">修改密码</a>
+                                </form>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        <li class="hidden-sm hidden-xs "><a href="/admin/login/">管理员</a></li>
+                        <li class="hidden-sm hidden-xs">
+                            <a href="/login/">学生 | 教师</a>
+                        </li>
+                    {% endif %}
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+
+{% block body %}
+{% endblock %}
+</body>
+</html>
+
+
+

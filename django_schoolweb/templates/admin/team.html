@@ -1,0 +1,294 @@
+{% extends "./adminbase.html" %}
+{% load static %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-float-label.min.css' %}">
+{% endblock %}
+{% block script %}
+<script>
+    $(function () {
+        $(".changestatus").click(function (event) {
+            let id = $(this).attr("name")
+
+            $.ajax({
+                async: true,
+                url: '/admin/match/status/' + id + "/",
+                type: 'GET',
+                traditional: true,
+
+            }).done(function (data) {
+
+                if (data.ret == "success") {
+                    window.location.reload()
+                    console.log("success")
+                } else {
+                    console.log("error")
+                }
+            })
+        });
+        $(".deletematch").click(function (event) {
+            let id = $(this).attr("name")
+
+            $.ajax({
+                async: true,
+                url: '/admin/match/delete/' + id + "/",
+                type: 'GET',
+                traditional: true,
+
+            }).done(function (data) {
+
+                if (data.ret == "success") {
+                    window.location.reload()
+                    console.log("success")
+                } else {
+                    console.log("error")
+                }
+            })
+        });
+        $(".checkpass").click(function (event) {
+            let id = $(this).attr("name")
+
+            $.ajax({
+                async: true,
+                url: '/admin/match/team/check/' + id + "/1/",
+                type: 'GET',
+                traditional: true,
+
+            }).done(function (data) {
+
+                if (data.ret == "success") {
+                    window.location.reload()
+                    console.log("success")
+                } else {
+                    console.log("error")
+                }
+            })
+        });
+         $(".checknopass").click(function (event) {
+            let id = $(this).attr("name")
+            let nopass = $('.nopass').val()
+            $.ajax({
+                async: true,
+                url: '/admin/match/team/check/' + id + "/0/?result="+nopass,
+                type: 'GET',
+                traditional: true,
+
+            }).done(function (data) {
+
+                if (data.ret == "success") {
+                    window.location.reload()
+                    console.log("success")
+                } else {
+                    console.log("error")
+                }
+            })
+        });
+    })
+
+</script>
+
+{% endblock %}
+{% block adminbody %}
+<div id="rightborder" class="pull-left" style="margin: 0;">
+
+    <div class="pull-left" style="margin-bottom: 5px;">
+        <h3 style="margin: 0px" class="pull-left">{{ match.name }}</h3>
+
+    </div>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>队伍名</th>
+            <th>详情</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        {% for team in page1 %}
+        <tr>
+
+            <td>{{ team.name }}</td>
+            <td>
+                <a href="/admin/match/team/{{ match.id }}/{{ pindex1 }}/{{ pindex2 }}/{{ pindex3 }}/?teamid={{ team.id }}">查看</a>
+            </td>
+
+            <td>
+                <input type="button" class="delete btn btn-danger checkpass" name="{{ team.id }}" value="审核通过">
+                <input type="button" class="delete btn btn-danger checknopass" name="{{ team.id  }}" value="不通过">
+            </td>
+
+        </tr>
+        {% endfor %}
+    </table>
+    {# 分页#}
+    <div id="course-page">
+        <nav aria-label="Page navigation">
+            <div class="pagination" style="margin: 0 0">
+                <ul class="pagination">
+                    {% if page1.has_previous %}
+                    <li>
+                        <a href="/admin/match/team/{{ match.id }}/{{ page1.previous_page_number }}/{{ pindex2 }}/{{ pindex3 }}/"
+                           aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span></a></li>
+                    {% endif %}
+
+                    {% for num in page1.paginator.page_range %}
+                    {% if pindex1 == num %}
+                    <li><a href="">{{ num }}</a></li>
+                    {% else %}
+                    <li><a href="/admin/match/team/{{ match.id }}/{{ num }}/{{pindex2}}/{{pindex3}}/">{{ num }}</a></li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if page1.has_next %}
+                    <li><a href="/admin/match/team/{{ match.id }}/{{ page1.next_page_number }}/{{pindex2}}/{{pindex3}}/"
+                           aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span></a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <div class="result" >原因：<input type="text" class="nopass" placeholder="不通过原因"></div>
+
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>队伍名</th>
+            <th>详情</th>
+            <th>备注</th>
+        </tr>
+        </thead>
+        {% for team in page2 %}
+        <tr>
+
+            <td>{{ team.name }}</td>
+            <td>
+                <a href="/admin/match/team/{{ match.id }}/{{ pindex1 }}/{{pindex2}}/{{pindex3}}/?teamid={{ team.id }}">查看</a>
+            </td>
+
+            <td>
+                已通过
+            </td>
+
+        </tr>
+        {% endfor %}
+    </table>
+    {# 分页#}
+    <div id="course-page">
+        <nav aria-label="Page navigation">
+            <div class="pagination" style="margin: 0 0">
+                <ul class="pagination">
+                    {% if page2.has_previous %}
+                    <li>
+                        <a href="/admin/match/team/{{ match.id }}/{{ pindex1 }}/{{page2.previous_page_number}}/{{pindex3}}/"
+                           aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span></a></li>
+                    {% endif %}
+
+                    {% for num in page2.paginator.page_range %}
+                    {% if pindex2 == num %}
+                    <li><a href="">{{ num }}</a></li>
+                    {% else %}
+                    <li><a href="/admin/match/team/{{ match.id }}/{{ pindex1 }}/{{num}}/{{pindex3}}/">{{ num }}</a></li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if page2.has_next %}
+                    <li><a href="/admin/match/team/{{ match.id }}/{{ pindex1 }}/{{page1.next_page_number}}/{{pindex3}}/"
+                           aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span></a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>队伍名</th>
+            <th>详情</th>
+            <th>备注</th>
+        </tr>
+        </thead>
+        {% for team in page3 %}
+        <tr>
+
+            <td>{{ team.name }}</td>
+            <td>
+                <a href="/admin/match/team/detail/{{ team.id }}/">查看</a>
+            </td>
+
+            <td>
+                未通过，{{ team.no_pass }}
+            </td>
+
+        </tr>
+        {% endfor %}
+    </table>
+    {# 分页#}
+    <div id="course-page">
+        <nav aria-label="Page navigation">
+            <div class="pagination" style="margin: 0 0">
+                <ul class="pagination">
+                    {% if page3.has_previous %}
+                    <li>
+                        <a href="/admin/match/team/{{ match.id }}/{{ pindex1 }}/{{pindex2}}/{{page3.previous_page_number}}/"
+                           aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span></a></li>
+                    {% endif %}
+
+                    {% for num in page3.paginator.page_range %}
+                    {% if pindex3 == num %}
+                    <li><a href="">{{ num }}</a></li>
+                    {% else %}
+                    <li><a href="/admin/match/team/{{ match.id }}/{{ pindex1 }}/{{pindex2}}/{{num}}/">{{ num }}</a></li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if page3.has_next %}
+                    <li><a href="/admin/match/team/{{ match.id }}/{{ pindex1 }}/{{pindex2}}/{{page1.next_page_number}}/"
+                           aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span></a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </div>
+</div>
+
+<hr>
+<div>队伍名：{{ team.name }}</div>
+<table class="table table-bordered table-hover">
+    <thead>
+    <tr>
+        <th>学号</th>
+        <th>姓名</th>
+        <th>身份</th>
+        <th>电话</th>
+    </tr>
+    </thead>
+
+    <tr>
+        {% for teamuser in choiceteam %}
+        <td>{{ teamuser.students.username }}</td>
+        <td>{{ teamuser.students.last_name }}</td>
+
+
+        {% if teamuser.role == 1 %}
+
+        <td>队长</td>
+
+        {% else %}
+        <td>队员</td>
+
+        {% endif %}
+        <td>{{ teamuser.phone }}</td>
+    </tr>
+    {% endfor %}
+    <td>#</td>
+    <td>{{ teamuser.team.teacher_name }}</td>
+    <td>指导老师</td>
+    <td>{{ teamuser.team.teacher_phone }}</td>
+</table>
+
+
+{% endblock adminbody %}

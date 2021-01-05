@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>详情</title>
+    {% load static %}
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        //使用ajax的post提交要加上geCookie()和csrfSafeMethod（）和ajaxSetup（）这三个函数，不然会报403,csrf
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                var csrftoken = getCookie('csrftoken');
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+        $(function () {
+            $(".delete").click(function (event) {
+                let id = $(this).attr("name")
+
+                $.ajax({
+                    async: true,
+                    url: '/admin/major/delete/' + id + "/",
+                    type: 'GET',
+                    traditional: true,
+
+                }).done(function (data) {
+                    console.log(data)
+                    if (data.ret == "success") {
+                        window.location.reload()
+                        console.log("success")
+                    } else {
+                        console.log("error")
+                    }
+                })
+            });
+
+            $(".update").click(function (event) {
+                let bid = $(this).attr("name")
+
+                let name = $("#" + bid).val()
+                $.ajax({
+                    async: true,
+                    url: '/admin/major/update/' + bid + "/",
+                    type: 'POST',
+                    traditional: true,
+                    data: {
+                        "name": name
+                    }
+
+                }).done(function (data) {
+                    console.log(data)
+                    if (data.ret == "success") {
+                        window.location.reload()
+                        console.log("success")
+                    } else {
+                        console.log("error")
+                    }
+
+                })
+            });
+
+        })
+
+    </script>
+</head>
+<body>
+<h2 style="text-align: center;margin-bottom:20px;">院校修改页面</h2>
+<div style="width: 60%;margin: 0 auto" class="well modal-content">
+    <form action="/admin/college/update/{{ college.id }}/" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label for="newtitle">院校名</label>
+                <input type="text" placeholder="请输入名字" name="name" value="{{ college.name }}" id="newtitle"
+                       class="form-control">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="newtitle">院系电话</label>
+                <input type="text" placeholder="请输入电话" name="tel" value="{{ college.tel }}" id="newtitle"
+                       class="form-control">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="blankcontent">内容</label>
+            <textarea name="content" cols="30" rows="2"
+                      id="blankcontent" class="form-control"
+                      style="height: 100px">{{ college.content }}</textarea>
+        </div>
+        <div style="position:relative; left: auto;top: 90%; ">
+            <input type="submit" value="修改" class="btn btn-info">
+            <a href="/admin/college/1/" class="btn btn-default">返回</a>
+        </div>
+    </form>
+        <!--源码-->
+        <h5>院校附属专业：</h5>
+        <table class="table table-hover table-striped" style="margin-bottom: 0;">
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>专业名</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            {% for major in page %}
+                <tr>
+                    {% widthratio 10 1 index as size %}
+                    <td name="{{ major.id }}">{{ size|add:forloop.counter }}</td>
+                    <td>
+                        <input type="text" value="{{ major.name }}" id="{{ major.id }}" style="border: transparent;">
+                    </td>
+                    <td>
+                        <input type="button" class="update btn btn-info" name="{{ major.id }}" value="修改">
+                        <input type="button" class="delete btn btn-danger" name="{{ major.id }}" value="删除">
+                    </td>
+                </tr>
+            {% endfor %}
+            <thead>
+            <form action="/admin/major/create/{{ college.id }}/" method="post">
+                {% csrf_token %}
+                <td>#</td>
+                <td>
+                    <input type="text" placeholder="新专业" name="name" style="border: transparent;">
+                </td>
+                <td>
+                    <input type="submit" value="添加" class="btn btn-info">
+                </td>
+            </form>
+            </thead>
+        </table>
+        {#    分页#}
+        <div style="text-align: center">
+            <nav aria-label="Page navigation">
+                <div class="pagination" style="margin: 0 0">
+                    <ul class="pagination">
+                        {% if page.has_previous %}
+                            <li><a href="/admin/college/detail/{{ college.id }}/{{ page.previous_page_number }}/"
+                                   aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span></a></li>
+                        {% endif %}
+
+                        {% for num in page.paginator.page_range %}
+                            {% if pindex == num %}
+                                <li><a href="">{{ num }}</a></li>
+                            {% else %}
+                                <li><a href="/admin/college/detail/{{ college.id }}/{{ num }}/">{{ num }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page.has_next %}
+                            <li><a href="/admin/college/detail/{{ college.id }}/{{ page.next_page_number }}/"
+                                   aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span></a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    <div style="color: red">{{ err }}</div>
+</div>
+</body>
+</html>

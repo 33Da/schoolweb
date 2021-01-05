@@ -1,0 +1,174 @@
+{% extends "./userbase.html" %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-float-label.min.css' %}">
+{% endblock %}
+{% block script %}
+    <script>
+        $(function () {
+            $(".delete").click(function (event) {
+                let id = $(this).attr("name")
+
+                $.ajax({
+                    async: true,
+                    url: '/user/class/delete/' + id + "/",
+                    type: 'GET',
+                    traditional: true,
+
+                }).done(function (data) {
+                    console.log(data)
+                    if (data.ret == "success") {
+                        window.location.reload()
+                        console.log("success")
+                    } else {
+                        console.log("error")
+                    }
+
+                })
+            });
+
+
+        })
+    </script>
+{% endblock %}
+{% block userbody %}
+    <div id="rightborder" class="pull-left" style="margin: 0;">
+        <div style="margin-bottom: 5px;">
+            <h3 style="margin: 0px" class="pull-left">课程安排:&nbsp;&nbsp;</h3>
+            <button class="btn btn-xs btn-primary glyphicon glyphicon-plus" class="pull-left" type="button"
+                    data-toggle="modal" data-target="#myModal"></button>
+        </div>
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>课程代号</th>
+                <th>课程名称</th>
+                <th>总分</th>
+                <th>学分</th>
+                <th>开课-结课时间</th>
+                <th>教师</th>
+                <th>课程类型</th>
+                <th>修读方式</th>
+                <th>所属学院</th>
+                <th>备注</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            {% for subject in page %}
+                <tr>
+                    <td>{{ subject.code }}</td>
+                    <td>{{ subject.name }}</td>
+                    <td>{{ subject.total }}</td>
+                    <td>{{ subject.credit }}</td>
+                    <td>{{ subject.starttime }}-{{ subject.endtime }}</td>
+                    <td>{{ subject.teacher.last_name }}</td>
+                    <td>{{ subject.get_type_display }}</td>
+                    <td>{{ subject.get_readtype_display }}</td>
+                    <td>{{ subject.college.name }}</td>
+                    <td>{{ subject.content }}</td>
+
+                    <td>
+                        <input type="button" class="delete btn btn-danger" name="{{ subject.id }}" value="删除">
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        {#    分页#}
+        <div id="course-page">
+            <nav aria-label="Page navigation">
+                <div class="pagination" style="margin: 0 0">
+                    <ul class="pagination">
+                        {% if page.has_previous %}
+                            <li><a href="/user/teacher/class/{{ page.previous_page_number }}/" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span></a></li>
+                        {% endif %}
+
+                        {% for num in page.paginator.page_range %}
+                            {% if pindex == num %}
+                                <li><a href="">{{ num }}</a></li>
+                            {% else %}
+                                <li><a href="/user/teacher/class/{{ num }}/">{{ num }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page.has_next %}
+                            <li><a href="/user/teacher/class/{{ page.next_page_number }}/" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span></a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+    {#模态框#}
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title " id="myModalLabel">创建课程</h4>
+                </div>
+                <form action="/user/class/create/" method="post" class="well text-center">
+                    {% csrf_token %}
+                    <div class="modal-body form-group input-group" style="margin-bottom: 0">
+                        <span class="has-float-label">
+                        <input type="text" name="name" class="form-control" placeholder="请输入" id="coursename">
+                        <label for="coursename">课程名</label>
+                        </span>
+                        <span class="has-float-label">
+                              <input type="text" name="total" class="form-control" placeholder="请输入" id="coursescore">
+                            <label for="coursescore">总分</label>
+                        </span>
+                        <span class="has-float-label">
+                        <input type="text" name="credit" class="form-control" placeholder="请输入" id="coursepoint">
+                        <label for="coursepoint">学分</label>
+                        </span>
+                    </div>
+                    <div class="form-group has-float-label">
+                        <select name="type" id="coursetype" class="form-control">
+                            <option value="1" selected>公共课</option>
+                            <option value="2">实践课</option>
+                            <option value="3">选修课</option>
+                        </select>
+                        <label for="coursetype">选课类型</label>
+                    </div>
+                    <div class="form-group has-float-label">
+                        <select name="read_type" id="sutdytype" class="form-control">
+                            <option value="1">选修</option>
+                            <option value="2">必修</option>
+                        </select>
+                        <label for="studytype">修读类型</label>
+                    </div>
+                    <div class="form-group has-float-label">
+                        <select name="college" id="college" class="form-control">
+                            {% for foo in college %}
+                                {% if foo.id == user.college.id %}
+                                    <option value="{{ foo.id }}" selected="selected">{{ foo.name }}</option>
+                                {% else %}
+                                    <option value="{{ foo.id }}">{{ foo.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                            <label for="college">所属学院</label>
+                        </select>
+                    </div>
+                    <div class="form-group has-float-label">
+                        <textarea name="content" id="blankarea" cols="30" rows="2" class="form-control"></textarea>
+                        <label for="blankarea">备注</label>
+                    </div>
+
+                    <div class="modal-footer">
+                        <div class="pull-left">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                            <input type="date" name="starttime" id="timeinput">
+                            <span> ~ </span>
+                            <input type="date" name="endtime" id="timeinput">
+                        </div>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <input type="submit" value="创建课程" class="btn btn-primary">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

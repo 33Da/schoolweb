@@ -1,0 +1,74 @@
+{% extends "./base.html" %}
+{% load static %}
+{% block css %}
+{% endblock %}
+{% block body %}
+    <div class="pull-left" id="leftbox">
+        {% if user.role == 3 %}
+            <ul>
+                {% if usermenu == 0 %}
+                    <li class="leftchoice"><a href="/user/detail/">个人信息</a></li>
+                {% else %}
+                    <li><a href="/user/detail/">个人信息</a></li>
+                {% endif %}
+                {% if usermenu == 1 %}
+                    <li class="leftchoice"><a href="/user/lost/1/1/">失物招领</a></li>
+                {% else %}
+                    <li><a href="/user/lost/1/1/">失物招领</a></li>
+                {% endif %}
+                {% if usermenu == 2 %}
+                    <li class="leftchoice"><a href="/user/match/1/">比赛报名</a></li>
+                {% else %}
+                    <li><a href="/user/match/1/">比赛报名</a></li>
+                {% endif %}
+                {% if usermenu == 3 %}
+                    <li class="leftchoice"><a href="/user/student/score/1/">成绩查询</a></li>
+                {% else %}
+                    <li><a href="/user/student/score/1/">成绩查询</a></li>
+                {% endif %}
+                {% if usermenu == 4 %}
+                    <li class="leftchoice"><a href="/user/student/class/1/">选择课程</a></li>
+                {% else %}
+                    <li><a href="/user/student/class/1/">选择课程</a></li>
+                {% endif %}
+                {% if usermenu == 5 %}
+                    <li class="leftchoice"><a href="/user/match/1/">比赛信息</a></li>
+                {% else %}
+                    <li><a href="/user/match/1/">比赛信息</a></li>
+                {% endif %}
+                {% if usermenu == 6 %}
+                    <li class="leftchoice"><a href="/user/team/1/">我的队伍</a></li>
+                {% else %}
+                    <li><a href="/user/team/1/">我的队伍</a></li>
+                {% endif %}
+
+            </ul>
+        {% else %}
+            <ul>
+                {% if usermenu == 0 %}
+                    <li class="leftchoice"><a href="/user/detail/" style="background: palegoldenrod">个人信息</a></li>
+                {% else %}
+                    <li><a href="/user/detail/">个人信息</a></li>
+                {% endif %}
+                {% if usermenu == 1 %}
+                    <li class="leftchoice"><a href="/user/lost/1/1/" style="background: palegoldenrod">失物招领</a></li>
+                {% else %}
+                    <li><a href="/user/lost/1/1/">失物招领</a></li>
+                {% endif %}
+                {% if usermenu == 2 %}
+                    <li class="leftchoice"><a href="/user/teacher/score/1/" style="background: palegoldenrod">录入成绩</a></li>
+                {% else %}
+                    <li><a href="/user/teacher/score/1/">录入成绩</a></li>
+                {% endif %}
+                {% if usermenu == 3 %}
+                    <li class="leftchoice"><a href="/user/teacher/class/1/" style="background: palegoldenrod">课程安排</a></li>
+                {% else %}
+                    <li><a href="/user/teacher/class/1/">课程安排</a></li>
+                {% endif %}
+
+            </ul>
+        {% endif %}
+    </div>
+    {% block userbody %}{% endblock %}
+{% endblock %}
+

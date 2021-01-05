@@ -1,0 +1,194 @@
+{% extends "./base.html" %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'plug/css/style.css' %}">
+{% endblock %}
+{% block script %}
+{#    <script>#}
+{#        $(function () {#}
+{#            var slider = $("#scrollPics .slider");#}
+{#            //获取图片#}
+{#            var imgCon = $("#scrollPics .slider li");#}
+{#            //除第一张其余的图片全部隐藏#}
+{#            imgCon.not(imgCon.eq(0)).hide();#}
+{#            //定义页码#}
+{#            var num = $("#scrollPics .num")#}
+{#            //获取li标签的长度#}
+{#            //find()方法返回备选元素的后代元素#}
+{#            var len = slider.find("li").length;#}
+{#            var html_page = "";#}
+{#            index = 0;#}
+{#            //添加页码#}
+{#            for (var i = 0; i < len; i++) {#}
+{#                if (i === 0) {#}
+{#                    html_page += "<li class='active'>" + (i + 1) + "</li>"#}
+{#                }#}
+{#                else {#}
+{#                    html_page += "<li>" + (i + 1) + "</li>"#}
+{#                }#}
+{#            }#}
+{#            //输出原点#}
+{#            num.html(html_page)#}
+{##}
+{#            //显示索引对应的图片#}
+{#            function showPic(index) {#}
+{#                imgCon.eq(index).show().siblings("li").hide();#}
+{#                num.find("li").eq(index).addClass("active").siblings("li").removeClass("active")#}
+{#            }#}
+{##}
+{#            //原点点击事件#}
+{#            $(".num li").click(function () {#}
+{#                index = $(this).index()#}
+{#                showPic(index)#}
+{#            })#}
+{#            //图片轮播#}
+{#            $("#scrollPics").hover(function () {#}
+{#                clearInterval(window.timer)#}
+{#            }, function () {#}
+{#                window.timer = setInterval(function () {#}
+{#                    showPic(index);#}
+{#                    index++;#}
+{#                    if (index === len) {#}
+{#                        index = 0#}
+{#                    }#}
+{#                }, 2000)#}
+{#            }).trigger("mouseleave")//触发备选元素的指定事件#}
+{##}
+{#        })#}
+{##}
+{#    </script>#}
+{% endblock %}
+{% block body %}
+    <div class="container">
+        {# 这里开始是轮播图 #}
+        {#        <div id="scrollPics">#}
+        {#            <ul class="slider" style="width: 600px;margin: 0 auto;">#}
+        {#                {% for foo in lostpic %}#}
+        {#                    <li>#}
+        {#                    <span>#}
+        {#                        {{ foo.name }}#}
+        {#                    </span>#}
+        {#                        {% if foo.pic1 != "" %}#}
+        {#                            <img src="/media/{{ foo.pic1 }}" alt="" width="500px" height="250px">#}
+        {#                        {% else %}#}
+        {#                            <img src="/static/img/default.jpg" alt="" width="500px" height="250px">#}
+        {#                        {% endif %}#}
+        {#                    </li>#}
+        {#                {% endfor %}#}
+        {#            </ul>#}
+        {#        </div>#}
+        <div style="width: 100%;text-align: center;margin-top: 10px;" class="search d7">
+            {# 这里开始是搜索 #}
+            <form action="/lost/search/1/" method="get">
+                <input type="text" placeholder="物品名" name="name">
+                <button type="submit"><span class="icon-search"></span></button>
+            </form>
+        </div>
+        <div class="row">
+            <div class="col-md-6" style="text-align: center;">
+                {# 这里开始是寻物列表 #}
+                <h3>
+                    寻物启示:
+                    <span class="label label-default">更多</span>
+                </h3>
+                <table class="table table-hover table-bordered">
+                    <thead>
+                    <tr>
+                        <td>物品</td>
+                        <td>丢失时间</td>
+                        <td>详情页</td>
+                    </tr>
+                    </thead>
+                    {% for lost1 in page1 %}
+                        <tr>
+                            <td>
+                                {{ lost1.name }}
+                            </td>
+                            <td>{{ lost1.time }}</td>
+                            <td><a href="/lost/detail/{{ lost1.id }}/">详情</a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                {#    分页#}
+                <div id="course-page">
+                    <nav aria-label="Page navigation">
+                    <div class="pagination" style="margin: 0 0">
+                        <ul class="pagination">
+                            {% if page1.has_previous %}
+                                <li><a href="/lost/{{ page1.previous_page_number }}/{{ pindex2 }}/"
+                                       aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span></a></li>
+                            {% endif %}
+
+                            {% for num in page1.paginator.page_range %}
+                                {% if pindex == num %}
+                                    <li><a href="">{{ num }}</a></li>
+                                {% else %}
+                                    <li><a href="/lost/{{ num }}/{{ pindex2 }}/">{{ num }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if page1.has_next %}
+                                <li><a href="/lost/{{ page1.previous_page_number }}/{{ pindex2 }}/" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span></a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </nav>
+                </div>
+            </div>
+            <div class="col-md-6" style="text-align: center;">
+                <h3>
+                    拾取启示:
+                    <span class="label label-default">更多</span>
+                </h3>
+                <table class="table table-hover table-bordered">
+                    <thead>
+                    <tr>
+                        <td>物品</td>
+                        <td>拾取时间</td>
+                        <td>详情页</td>
+                    </tr>
+                    </thead>
+                    {% for lost2 in page2 %}
+                        <tr>
+                            <td>
+                                {{ lost2.name }}
+                            </td>
+                            <td>{{ lost2.time }}</td>
+                            <td><a href="/lost/detail/{{ lost2.id }}/">详情页</a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                {#    分页#}
+                <div id="course-page">
+                    <nav aria-label="Page navigation">
+                        <div class="pagination" style="margin: 0 0">
+                            <ul class="pagination">
+                                {% if page2.has_previous %}
+                                    <li><a href="/lost/{{ pindex1 }}/{{ page2.previous_page_number }} /"
+                                           aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span></a></li>
+                                {% endif %}
+
+                                {% for num in page2.paginator.page_range %}
+                                    {% if pindex == num %}
+                                        <li><a href="">{{ num }}</a></li>
+                                    {% else %}
+                                        <li><a href="/lost/{{ pindex1 }}/{{ num }}/">{{ num }}</a></li>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if page2.has_next %}
+                                    <li><a href="/lost/{{ pindex1 }}/{{ page2.previous_page_number }}/"
+                                           aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span></a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

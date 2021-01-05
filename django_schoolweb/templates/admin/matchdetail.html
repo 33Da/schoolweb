@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>详情</title>
+    {% load static %}
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+</head>
+<body>
+<h2 style="text-align: center;margin-bottom:20px;">比赛详情</h2>
+<div style="width: 60%;margin: 0 auto" class="well modal-content">
+
+        <img src="/media/{{match.pic}}" alt="" width=300px height=300px>
+        <h3>{{match.name}}</h3>
+        发布时间：<span>{{match.publishtime}}</span>
+        类型：<span>{{match.get_type_display}}</span>
+        报名截止: <span>{{match.endtime}}</span>
+        主办方: <span>{{match.host}}</span>
+        咨询群: <span>{{match.advice_team}}</span>
+    <br>
+        内容：<div>{{match.content}}</div>
+    <div> 比赛结果：<a href="{{ match.result }}" download="{{match.name}}结果.xls">点击下载</a> </div>
+    {% for file in match.Enclosure.all%}
+    <div> 附件：<a href="/media/{{ file.enclosure }}" download="{{file.name}}">{{file.name}}</a> </div>
+    {% endfor %}
+
+
+</div>
+</body>
+</html>
+
+

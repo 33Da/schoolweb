@@ -1,0 +1,188 @@
+/*首页的消息栏*/
+#news a, #bigtext, #normaltext, #smalltext, #nt-example1 a ,#news-box a,#all-search a,#rightborder a
+{
+    text-decoration: none;
+}
+
+#news ul, #bottom ul {
+    list-style: none;
+    font-size: 18px;
+}
+
+/*科研成果的字体*/
+.science {
+    font-size: 18px;
+}
+
+/*首页底部的灰色地带*/
+#bottom {
+    background: #5e5e5e;
+}
+
+#bottom a {
+    text-decoration: none;
+    display: block;
+}
+
+/*学生界面左边栏目*/
+#leftbox {
+    text-align: center;
+    width: 100px;
+    font-size: 22px;
+}
+
+#leftbox li {
+    width: 100px;
+    height: 40px;
+}
+
+.leftchoice {
+    background: palegoldenrod;
+}
+
+#leftbox li:hover {
+    background: palegoldenrod;
+}
+
+#leftbox a {
+    text-decoration: none;
+}
+
+/*学生界面右边栏目*/
+#rightbox {
+    padding-left: 20px;
+    width: 900px;
+}
+
+#rightbox div {
+    padding: 0 2px;
+}
+
+/*左对齐*/
+.forleft {
+    text-align: left;
+}
+
+/*右对齐*/
+.forright {
+    text-align: right;
+}
+
+/*右边信息栏*/
+#rightimformation div {
+    padding: 4px 0;
+}
+
+/*输入框类*/
+.input-information, #rightimformation input {
+    width: 150px;
+    -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    -ms-transition: all 0.30s ease-in-out;
+    -o-transition: all 0.30s ease-in-out;
+    outline: none;
+    border: #ddd 1px solid;
+}
+
+.input-information:focus, #rightimformation input:focus {
+    box-shadow: 0 0 5px rgb(6, 185, 216);
+    border: rgb(0, 152, 216) 1px solid;
+}
+
+/*教师录入成绩输入框隐藏*/
+.course-input {
+    border: transparent;
+    background: transparent;
+    height: 20px;
+}
+
+.course-input:focus {
+    box-shadow: 0 0 0 transparent;
+    border: transparent 0 solid;
+}
+
+/*头像触摸效果*/
+.imgheader:hover {
+    border: rgb(216, 95, 86) 2px solid;
+}
+
+/*右侧信息边框*/
+#rightborder {
+    margin: 15px auto;
+    padding: 10px 30px;
+}
+
+/*课程搜索框*/
+#course-search {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+#course-search input, select {
+    margin-right: 10px;
+}
+
+/*下拉菜单*/
+select {
+    /*Chrome和Firefox里面的边框是不一样的，所以复写了一下*/
+    border: solid 1px #ced8b9;
+    /*很关键：将默认的select选择框样式清除*/
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    /*在选择框的最右侧中间显示小箭头图片*/
+    background: url("http://ourjs.github.io/static/2015/arrow.png") no-repeat scroll right center transparent;
+    /*为下拉小箭头留出一点位置，避免被文字覆盖*/
+    padding-right: 15px;
+}
+
+select::-ms-expand {
+    display: none;
+}
+
+/*课程分页器*/
+#course-page {
+    text-align: center;
+}
+
+#course-page div ul, div {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+#timeinput {
+    border-radius: 4px;
+    color: #555;
+    background-color: #fff;
+    border: 1px solid #ccc;
+}
+
+/*信息细节正文部分*/
+#new-box {
+    margin: 0 3%;
+    padding: 1% 1%;
+}
+
+/*右边信息细节*/
+#rightnews {
+    background: #F2F2F2;
+    border-radius: 5px;
+}
+
+/*信息底部*/
+#new-foot {
+    background-color: #085695;
+    height: 250px;
+    padding: 80px 0px 40px 0px;
+}
+#new-foot h4,h5
+{
+    color: white;
+}
+/*所有信息页面*/
+#news-box {
+    margin: 0 5%;
+    padding: 1% 1%;
+}

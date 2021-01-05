@@ -1,0 +1,41 @@
+{% extends "./base.html" %}
+{% block body %}
+    <div class="pull-left" id="leftbox">
+    <ul>
+
+        {% if menu == 4 %}
+            <li class="leftchoice"><a href="/admin/user/1/">用户管理</a></li>
+        {% else %}
+            <li><a href="/admin/user/1/">用户管理</a></li>
+        {% endif %}
+        {% if menu == 0 %}
+            <li class="leftchoice"><a href="/admin/schoolpic/1/">学校风景</a></li>
+        {% else %}
+            <li><a href="/admin/schoolpic/1/">学校风景</a></li>
+        {% endif %}
+        {% if menu == 1 %}
+            <li class="leftchoice"><a href="/admin/new/1/">消息发布</a></li>
+        {% else %}
+            <li><a href="/admin/new/1/">消息发布</a></li>
+        {% endif %}
+        {% if menu == 2 %}
+            <li class="leftchoice"><a href="/admin/research/1/">科研成果</a></li>
+        {% else %}
+            <li><a href="/admin/research/1/">科研成果</a></li>
+        {% endif %}
+        {% if menu == 3 %}
+            <li class="leftchoice"><a href="/admin/college/1/">院系链接</a></li>
+        {% else %}
+            <li><a href="/admin/college/1/">院系链接</a></li>
+        {% endif %}
+        {% if menu == 5 %}
+            <li class="leftchoice"><a href="/admin/match/1/1/">比赛管理</a></li>
+        {% else %}
+            <li><a href="/admin/match/1/1/">比赛管理</a></li>
+        {% endif %}
+
+    </ul>
+    </div>
+    {% block adminbody %}
+    {% endblock %}
+{% endblock %}

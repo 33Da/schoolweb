@@ -1,0 +1,278 @@
+{% extends "./base.html" %}
+{% load static %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-float-label.min.css' %}">
+<link rel="stylesheet" href="{% static 'plug/css/style.css' %}">
+<style>
+    /*控制下拉小箭头的*/
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+        /* position: absolute;
+        top: 12px;
+        right: 0px; */
+        border: 1px solid #ccc;
+        border-radius: 2px;
+        box-shadow: inset 0 1px #fff, 0 1px #eee;
+        background-color: #eee;
+        /* background:url('../images/icon.png') -188px -99px; */
+        background-image: -webkit-linear-gradient(top, #f0f0f0, #e6e6e6);
+        color: #666;
+    }
+
+    /* 去掉date中上下小三角，但是保留input类型为number的小三角。 */
+    input[type=date]::-webkit-inner-spin-button {
+        visibility: hidden;
+    }
+</style>
+{% endblock %}
+{% block script %}
+
+
+{% endblock %}
+{% block body %}
+<div class="container">
+        <div style="width: 100%;text-align: center;margin-top: 10px;" class="search d7">
+            {# 这里开始是搜索 #}
+            <form action="/match/search/1/" method="get">
+                <input type="text" placeholder="竞赛名" name="name">
+                <button type="submit"><span class="icon-search"></span></button>
+            </form>
+        </div>
+    </div>
+<div id="rightborder" class="pull-left" style="margin: 0;">
+
+
+            <div role="tabpanel" class="tab-pane active pull-left" >
+                <h3 class="pull-left" style="margin-top:0;">
+                    艺术类
+                </h3>
+
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th>比赛名称</th>
+                        <th>发布时间</th>
+
+                    </tr>
+                    </thead>
+                    {% for match in page1 %}
+                    <tr>
+
+
+                        <td>
+                            <a href="/match/detail/{{ match.id }}/">{{ match.name }}</a>
+                        </td>
+                        <td>{{ match.publishtime }}</td>
+
+
+                    </tr>
+                    {% endfor %}
+                </table>
+                {# 分页#}
+                <div >
+                    <nav aria-label="Page navigation">
+                        <div class="pagination" style="margin: 0 0">
+                            <ul class="pagination">
+                                {% if page1.has_previous %}
+                                <li><a href="/user/match/{{ page1.previous_page_number }}/{{ pindex2 }}/{{ pindex3 }}/{{ pindex4 }}/"
+                                       aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span></a></li>
+                                {% endif %}
+
+                                {% for num in page1.paginator.page_range %}
+                                {% if pindex1 == num %}
+                                <li><a href="">{{ num }}</a></li>
+                                {% else %}
+                                <li><a href="/user/match/{{ num }}/{{ pindex2 }}/{{ pindex3 }}/{{ pindex4 }}/">{{ num
+                                    }}</a></li>
+                                {% endif %}
+                                {% endfor %}
+
+                                {% if page1.has_next %}
+                                <li>
+                                    <a href="/user/match/{{ page1.next_page_number }}/{{ pindex2 }}/{{ pindex3 }}/{{ pindex4 }}/"
+                                       aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span></a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+            <!-- 第二页 -->
+             <div role="tabpanel" class="tab-pane active pull-left" >
+                <h3 class="pull-left" style="margin-top:0;">
+                    学术科技类
+                </h3>
+
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th>比赛名称</th>
+                        <th>发布时间</th>
+
+                    </tr>
+                    </thead>
+                    {% for match in page2 %}
+                    <tr>
+                        <td>
+                            <a href="/match/detail/{{ match.id }}/">{{ match.name }}</a>
+                        </td>
+                        <td>{{ match.publishtime }}</td>
+
+
+                    </tr>
+                    {% endfor %}
+                </table>
+                {# 分页#}
+                <div >
+                    <nav aria-label="Page navigation">
+                        <div class="pagination" style="margin: 0 0">
+                            <ul class="pagination">
+                                {% if page2.has_previous %}
+                                <li><a href="/user/match/{{ pindex1 }}/{{ page2.previous_page_number }}/{{ pindex3 }}/{{ pindex4 }}/"
+                                       aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span></a></li>
+                                {% endif %}
+
+                                {% for num in page2.paginator.page_range %}
+                                {% if pindex2 == num %}
+                                <li><a href="">{{ num }}</a></li>
+                                {% else %}
+                                <li><a href="/user/match/{{ pindex1 }}/{{ num }}/{{ pindex3 }}/{{ pindex4 }}/">{{ num
+                                    }}</a></li>
+                                {% endif %}
+                                {% endfor %}
+
+                                {% if page2.has_next %}
+                                <li>
+                                    <a href="/user/match/{{ pindex1 }}/{{ page2.next_page_number }}/{{ pindex3 }}/{{ pindex4 }}/"
+                                       aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span></a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+    <br>
+  <!-- 第三页 -->
+             <div role="tabpanel" class="tab-pane active pull-left" >
+                <h3 class="pull-left" style="margin-top:0;">
+                    体育类
+                </h3>
+
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th>比赛名称</th>
+                        <th>发布时间</th>
+
+                    </tr>
+                    </thead>
+                    {% for match in page3 %}
+                    <tr>
+                        <td>
+                            <a href="/match/detail/{{ match.id }}/">{{ match.name }}</a>
+                        </td>
+                        <td>{{ match.publishtime }}</td>
+
+
+                    </tr>
+                    {% endfor %}
+                </table>
+                {# 分页#}
+                <div >
+                    <nav aria-label="Page navigation">
+                        <div class="pagination" style="margin: 0 0">
+                            <ul class="pagination">
+                                {% if page3.has_previous %}
+                                <li><a href="/user/match/{{ pindex1 }}//{{ pindex2 }}/{{ page3.previous_page_number }}/{{ pindex4 }}/"
+                                       aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span></a></li>
+                                {% endif %}
+
+                                {% for num in page3.paginator.page_range %}
+                                {% if pindex3 == num %}
+                                <li><a href="">{{ num }}</a></li>
+                                {% else %}
+                                <li><a href="/user/match/{{ pindex1 }}/{{ pindex2 }}/{{ num }}/{{ pindex4 }}/">{{ num
+                                    }}</a></li>
+                                {% endif %}
+                                {% endfor %}
+
+                                {% if page3.has_next %}
+                                <li>
+                                    <a href="/user/match/{{ pindex1 }}//{{ pindex2 }}/{{ page3.next_page_number }}/{{ pindex4 }}/"
+                                       aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span></a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+      <!-- 第四页 -->
+             <div role="tabpanel" class="tab-pane active pull-left" >
+                <h3 class="pull-left" style="margin-top:0;">
+                    其他
+                </h3>
+
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th>比赛名称</th>
+                        <th>发布时间</th>
+
+                    </tr>
+                    </thead>
+                    {% for match in page4 %}
+                    <tr>
+                        <td>
+                            <a href="/match/detail/{{ match.id }}/">{{ match.name }}</a>
+                        </td>
+                        <td>{{ match.publishtime }}</td>
+
+
+                    </tr>
+                    {% endfor %}
+                </table>
+                {# 分页#}
+                <div >
+                    <nav aria-label="Page navigation">
+                        <div class="pagination" style="margin: 0 0">
+                            <ul class="pagination">
+                                {% if page4.has_previous %}
+                                <li><a href="/user/match/{{ pindex1 }}//{{ pindex2 }}/{{ pindex3 }}/{{ page4.previous_page_number }}//"
+                                       aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span></a></li>
+                                {% endif %}
+
+                                {% for num in page4.paginator.page_range %}
+                                {% if pindex4 == num %}
+                                <li><a href="">{{ num }}</a></li>
+                                {% else %}
+                                <li><a href="/user/match/{{ pindex1 }}/{{ pindex2 }}/{{ pindex3 }}/{{ num }}/">{{ num
+                                    }}</a></li>
+                                {% endif %}
+                                {% endfor %}
+
+                                {% if page4.has_next %}
+                                <li>
+                                    <a href="/user/match/{{ pindex1 }}//{{ pindex2 }}/{{ pindex3 }}/{{ page4.next_page_number }}/"
+                                       aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span></a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+
+            </div>
+
+</div>
+
+{% endblock %}
